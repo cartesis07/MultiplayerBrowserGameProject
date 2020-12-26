@@ -14,13 +14,31 @@
     <div class="content">
         <h1>Multiplayer Browser Game</h1>
         <br/><br/>
+        <div class="input-group input-group-lg">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="inputGroup-sizing-lg">Username</span>
+          </div>
+          <input id="input-username" type="text" class="form-control" aria-label="username" aria-describedby="inputGroup-sizing-sm">
+        </div>
+        <br/><br/>
+        <button type="button" onClick="SendUsername()" class="btn btn-success">Send Username</button>
+        <br/><br/>
+        <hr/>
+        <br/><br/>
+        <div class="input-group input-group-lg">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="inputGroup-sizing-lg">Room ID</span>
+          </div>
+          <input id="input-room" type="text" class="form-control" aria-label="room-id" aria-describedby="inputGroup-sizing-sm">
+        </div>
+        <br/><br/>
         <button type="button" onClick="CreateRoom()" class="btn btn-primary">Create Room</button>
         <br/><br/>
         <button type="button" onClick="JoinRoom()" class="btn btn-info">Join Room</button>
         <br/><br/>
-        <button type="button" onClick="LeaveRoom()" class="btn btn-danger">Leave Room</button>
-        <br/><br/>
         <button type="button" onClick="ShowRooms()" class="btn btn-dark">Show Rooms</button>
+        <br/><br/>
+        <button type="button" onClick="LeaveRoom()" class="btn btn-danger">Leave Room</button>
     </div>
 </body>
 </html>
