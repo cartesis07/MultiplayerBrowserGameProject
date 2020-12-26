@@ -29,18 +29,33 @@ server.listen(port, ()=> {
     console.log(`Server is up on port ${port}.`)
 });
 
+function makeid(length) {
+  var result           = '';
+  var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  var charactersLength = characters.length;
+  for ( var i = 0; i < length; i++ ) {
+     result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
+
 io.sockets.on('connection', function(socket) {
 
     console.log("A user just connected.")
     socket.on('send-username', function(username) {
-      console.log("pseudonym changed")
       users[socket.id] = username;
+      console.log("Pseudonym changed to : ",username)
     });
 
     socket.on('create', function(room) {
-      socket.join(room);
+
+      var room_name = makeid(6);
+
+      socket.join(room_name);
       console.log("Room created with ID : ", room, " by user : ", users[socket.id])
       console.log(socket.rooms);
+
+      io.sockets.to(room_name).emit('room-id', room_name);
     });
 
     socket.on('join', function(room){
@@ -50,6 +65,8 @@ io.sockets.on('connection', function(socket) {
         socket.join(room);
         console.log("Room : ", room, " joined by user : ", users[socket.id])
         console.log(socket.rooms);
+
+        io.sockets.to(room).emit('room-id', room);
       }
       else{
         console.log("Sorry, but this room does not exist.")
@@ -59,6 +76,10 @@ io.sockets.on('connection', function(socket) {
     socket.on('ping', () => {
         console.log(io.sockets.adapter.rooms);
     });
+
+    socket.on('leave', function(room_name) {
+      socket.leave(room_name);
+    })
 
     socket.on('disconnecting', () => {
         //Do something here

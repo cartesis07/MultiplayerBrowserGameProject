@@ -12,6 +12,7 @@
 <body>
 
     <div class="content">
+        <br/>
         <h1>Multiplayer Browser Game</h1>
         <br/><br/>
         <div class="input-group input-group-lg">
@@ -20,10 +21,14 @@
           </div>
           <input id="input-username" type="text" class="form-control" aria-label="username" aria-describedby="inputGroup-sizing-sm">
         </div>
-        <br/><br/>
+        <br/>
         <button type="button" onClick="SendUsername()" class="btn btn-success">Send Username</button>
         <br/><br/>
         <hr/>
+        <h4>Your Room ID : </h4><h4 id="room-id"></h4>
+        <hr/>
+        <br/>
+        <button type="button" onClick="CreateRoom()" class="btn btn-primary">Create Room</button>
         <br/><br/>
         <div class="input-group input-group-lg">
           <div class="input-group-prepend">
@@ -31,9 +36,7 @@
           </div>
           <input id="input-room" type="text" class="form-control" aria-label="room-id" aria-describedby="inputGroup-sizing-sm">
         </div>
-        <br/><br/>
-        <button type="button" onClick="CreateRoom()" class="btn btn-primary">Create Room</button>
-        <br/><br/>
+        <br/>
         <button type="button" onClick="JoinRoom()" class="btn btn-info">Join Room</button>
         <br/><br/>
         <button type="button" onClick="ShowRooms()" class="btn btn-dark">Show Rooms</button>
