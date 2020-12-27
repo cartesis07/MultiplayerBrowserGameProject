@@ -2,16 +2,30 @@ var socket = io.connect();
 
 var current_room = "";
 
+var my_username = "";
+
+var players_list = [];
+
 socket.on('room-id', function(room_id) {
     current_room = room_id;
     UpdateRoomIDDisplay();
 });
 
+socket.on('players-list', function(users_list){
+    players_list = users_list
+    UpdateRoomListDisplay();
+});
+
+socket.on('alert-room', () => {
+    alert("Sorry, but this room does not exist")
+})
 
 function CreateRoom() {
     socket.emit('leave', current_room)
     socket.emit('create', document.getElementById("input-room").value);
+    players_list = [my_username]
     UpdateRoomIDDisplay();
+    UpdateRoomListDisplay();
 }
 
 function JoinRoom() {
@@ -25,15 +39,23 @@ function ShowRooms(){
 }
 
 function SendUsername(){
-    socket.emit('send-username', document.getElementById("input-username").value)
+    my_username = document.getElementById("input-username").value
+    socket.emit('send-username', my_username)
+    
 }
 
 function LeaveRoom() {
     socket.emit('leave', current_room)
     current_room = ""
+    players_list = []
     UpdateRoomIDDisplay();
+    UpdateRoomListDisplay();
 }
 
 function UpdateRoomIDDisplay(){
     document.getElementById("room-id").innerHTML = current_room;
+}
+
+function UpdateRoomListDisplay(){
+    document.getElementById("players-list").innerHTML = players_list.toString()
 }
