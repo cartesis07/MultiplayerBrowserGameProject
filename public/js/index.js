@@ -6,6 +6,8 @@ var my_username = "";
 
 var players_list = [];
 
+var administrator = false;
+
 socket.on('room-id', function(room_id) {
     current_room = room_id;
 
@@ -28,7 +30,10 @@ function CreateRoom() {
     socket.emit('create', document.getElementById("input-room").value);
     players_list = [my_username]
 
+    administrator = true;
+
     Hide("room-controls")
+    Display("launch-game")
 
     UpdateRoomIDDisplay();
     UpdateRoomListDisplay();
@@ -61,6 +66,9 @@ function LeaveRoom() {
     socket.emit('leave', current_room)
     current_room = ""
     players_list = []
+
+    administrator = false;
+    Hide("launch-game");
 
     Display("room-controls");
 
