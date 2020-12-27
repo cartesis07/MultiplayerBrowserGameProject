@@ -15,6 +15,8 @@
         <br/>
         <h1>Multiplayer Browser Game</h1>
         <br/><br/>
+
+        <div id="first-action" class="first-action">
         <div class="input-group input-group-lg">
           <div class="input-group-prepend">
             <span class="input-group-text" id="inputGroup-sizing-lg">Username</span>
@@ -23,13 +25,16 @@
         </div>
         <br/>
         <button type="button" onClick="SendUsername()" class="btn btn-success">Send Username</button>
-        <br/><br/>
+        </div>
+
+        <div id="lobby" class="lobby">
         <hr/>
         <h4>Your Room ID : </h4><h4 id="room-id"></h4>
         <hr/>
         <h4>Players in your room : </h4><h4 id="players-list"></h4>
         <hr/>
         <br/>
+        <div id="room-controls" class="room-controls">
         <button type="button" onClick="CreateRoom()" class="btn btn-primary">Create Room</button>
         <br/><br/>
         <div class="input-group input-group-lg">
@@ -41,9 +46,14 @@
         <br/>
         <button type="button" onClick="JoinRoom()" class="btn btn-info">Join Room</button>
         <br/><br/>
+        </div>
         <button type="button" onClick="ShowRooms()" class="btn btn-dark">Show Rooms</button>
         <br/><br/>
         <button type="button" onClick="LeaveRoom()" class="btn btn-danger">Leave Room</button>
+        <hr/>
+        <button type="button" onClick="LaunchGame()" class="btn-lg btn-success">Launch Game</button>
+        </div>
+
     </div>
 </body>
 </html>

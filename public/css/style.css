@@ -4,3 +4,11 @@
     text-align: center;
     width: 90%;
 }
+
+.first-action {
+    display: block;
+}
+
+.lobby {
+    display: none;
+}

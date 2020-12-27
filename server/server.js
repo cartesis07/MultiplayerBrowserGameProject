@@ -46,12 +46,12 @@ io.sockets.on('connection', function(socket) {
       console.log("Pseudonym changed to : ",username)
     });
 
-    socket.on('create', function(room) {
+    socket.on('create', function() {
 
       var room_name = makeid(6);
 
       socket.join(room_name);
-      console.log("Room created with ID : ", room, " by user : ", users[socket.id])
+      console.log("Room created with ID : ", room_name, " by user : ", users[socket.id])
       console.log(socket.rooms);
 
       currentRoomId = room_name;
