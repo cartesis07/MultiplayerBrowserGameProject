@@ -91,3 +91,8 @@ function Display(block){
 function Hide(block){
     document.getElementById(block).style.display = "none"
 }
+
+function LaunchGame(){
+    Hide("lobby")
+    Hide("launch-game")
+}
