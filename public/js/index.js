@@ -13,6 +13,7 @@ socket.on('room-id', function(room_id) {
 
     Hide("room-controls")
     Display("leave-section")
+    Display("lobby")
 
     UpdateRoomIDDisplay();
 });
@@ -34,6 +35,7 @@ function CreateRoom() {
     administrator = true;
 
     Hide("room-controls")
+    Display("lobby")
     Display("launch-game")
     Display("leave-section")
 
@@ -57,7 +59,7 @@ function SendUsername(){
         socket.emit('send-username', my_username)
     
         Hide("first-action")
-        Display("lobby")
+        Display("room-controls")
     }
     else{
         alert("Please, enter a valid username.")
@@ -72,6 +74,7 @@ function LeaveRoom() {
     administrator = false;
     Hide("launch-game");
     Hide("leave-section")
+    Hide("lobby")
 
     Display("room-controls");
 
@@ -95,8 +98,19 @@ function Hide(block){
     document.getElementById(block).style.display = "none"
 }
 
+//administrator launch the game
 function LaunchGame(){
+    socket.emit('launch-game');
     Hide("lobby")
     Hide("launch-game")
     Hide("leave-section")
 }
+
+//game launched by the administrator
+socket.on('game-launched', () => {
+    if (administrator === false){
+        Hide("lobby")
+        Hide("launch-game")
+        Hide("leave-section")
+    }
+})

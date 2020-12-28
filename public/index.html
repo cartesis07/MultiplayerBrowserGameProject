@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Multiplayer Browser Game</title>
+  <title>SocketIO Game</title>
   <link rel="stylesheet" href="./css/style.css">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
   <script src="/socket.io/socket.io.js"></script>
@@ -12,12 +12,14 @@
 <body>
 
   <div class="bg"></div>
-<div class="bg bg2"></div>
-<div class="bg bg3"></div>
+  <div class="bg bg2"></div>
+  <div class="bg bg3"></div>
 
     <div class="content">
-        <br/>
-        <h1><b>Multiplayer Browser Game</b></h1>
+      
+        <div id="game-title" class="game-title">
+        <h1><b>SocketIO Game</b></h1>
+        </div>
 
         <div id="first-action" class="first-action">
         <div class="input-group input-group-lg">
@@ -36,9 +38,12 @@
         <hr/>
         <h4>Players in your room : </h4><h4 id="players-list"></h4>
         <hr/>
+        </div>
+
         <div id="room-controls" class="room-controls">
+        <br/>
         <button type="button" onClick="CreateRoom()" class="btn btn-primary">Create Room</button>
-        <br/><br/>
+        <hr/>
         <div class="input-group input-group-lg">
           <div class="input-group-prepend">
             <span class="input-group-text" id="inputGroup-sizing-lg">Room ID</span>
@@ -47,9 +52,6 @@
         </div>
         <br/>
         <button type="button" onClick="JoinRoom()" class="btn btn-info">Join Room</button>
-        </div>
-        <br/>
-        <button type="button" onClick="ShowRooms()" class="btn btn-dark">Show Rooms</button>
         </div>
 
         <div id="leave-section" class="leave-section">

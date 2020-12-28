@@ -9,6 +9,9 @@ const port = process.env.PORT || 3000;
 //list of connected user
 let users = {};
 
+//dictionary of current games
+let games_list = [];
+
 //call our express function
 let app = express();
 
@@ -106,7 +109,6 @@ io.sockets.on('connection', function(socket) {
       }
 
       currentRoomId = undefined;
-
     })
 
     socket.on('disconnecting', () => {
@@ -130,4 +132,32 @@ io.sockets.on('connection', function(socket) {
 
         delete users[socket.id];
     })
+
+    socket.on('launch-game', () => {
+      io.sockets.to(currentRoomId).emit('game-launched')
+
+      //broadcast players list into room
+      players_set = io.sockets.adapter.rooms.get(currentRoomId)
+      tmp_users = []
+      if (players_set !== undefined){
+        players_set.forEach(element => {
+        tmp_users.push(users[element])
+        });
+      }
+
+      const new_game = new GameManagement(tmp_users,currentRoomId)
+      games_list.push({
+        key: currentRoomId,
+        value: new_game
+      })
+
+    })
 });
+
+class GameManagement {
+     constructor(users_list,Room_ID){
+        this.users = users_list
+        this.room = Room_ID
+     }
+}
+
