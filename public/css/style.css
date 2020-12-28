@@ -84,4 +84,8 @@ h1 {
     100% {
       transform:translateX(25%);
     }
-  }
+}
+
+.role-information{
+    display: none;
+}

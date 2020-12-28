@@ -6,7 +6,7 @@ const socketIO = require('socket.io');
 const publicPath = path.join(__dirname, '/../public');
 const port = process.env.PORT || 3000;
 
-//list of connected user
+//list of connected users
 let users = {};
 
 //dictionary of current games
@@ -136,7 +136,6 @@ io.sockets.on('connection', function(socket) {
     socket.on('launch-game', () => {
       io.sockets.to(currentRoomId).emit('game-launched')
 
-      //broadcast players list into room
       players_set = io.sockets.adapter.rooms.get(currentRoomId)
       tmp_users = []
       if (players_set !== undefined){
@@ -156,8 +155,17 @@ io.sockets.on('connection', function(socket) {
 
 class GameManagement {
      constructor(users_list,Room_ID){
-        this.users = users_list
+        this.game_users_list = users_list
         this.room = Room_ID
+        this.socket = 
+
+        this.AssignRoles()
      }
+
+    AssignRoles(){
+        var traitor = this.game_users_list[Math.floor(Math.random() * this.game_users_list.length)]
+        console.log(traitor)
+        io.sockets.to(this.room).emit('roles', traitor)
+    }
 }
 

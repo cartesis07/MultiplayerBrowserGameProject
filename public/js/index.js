@@ -8,6 +8,8 @@ var players_list = [];
 
 var administrator = false;
 
+var role = "";
+
 socket.on('room-id', function(room_id) {
     current_room = room_id;
 
@@ -112,5 +114,17 @@ socket.on('game-launched', () => {
         Hide("lobby")
         Hide("launch-game")
         Hide("leave-section")
+    }
+})
+
+//get roles for the game
+socket.on('roles', function(traitor){
+    if(traitor === my_username){
+        document.getElementById("role-information").innerHTML = "You are the impostor"
+        Display("role-information")
+    }
+    else{
+        document.getElementById("role-information").innerHTML = "You are a crewmate"
+        Display("role-information")
     }
 })
