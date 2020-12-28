@@ -12,6 +12,7 @@ socket.on('room-id', function(room_id) {
     current_room = room_id;
 
     Hide("room-controls")
+    Display("leave-section")
 
     UpdateRoomIDDisplay();
 });
@@ -34,6 +35,7 @@ function CreateRoom() {
 
     Hide("room-controls")
     Display("launch-game")
+    Display("leave-section")
 
     UpdateRoomIDDisplay();
     UpdateRoomListDisplay();
@@ -69,6 +71,7 @@ function LeaveRoom() {
 
     administrator = false;
     Hide("launch-game");
+    Hide("leave-section")
 
     Display("room-controls");
 
@@ -95,4 +98,5 @@ function Hide(block){
 function LaunchGame(){
     Hide("lobby")
     Hide("launch-game")
+    Hide("leave-section")
 }

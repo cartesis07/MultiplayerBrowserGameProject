@@ -11,10 +11,13 @@
 </head>
 <body>
 
+  <div class="bg"></div>
+<div class="bg bg2"></div>
+<div class="bg bg3"></div>
+
     <div class="content">
         <br/>
-        <h1>Multiplayer Browser Game</h1>
-        <br/><br/>
+        <h1><b>Multiplayer Browser Game</b></h1>
 
         <div id="first-action" class="first-action">
         <div class="input-group input-group-lg">
@@ -33,7 +36,6 @@
         <hr/>
         <h4>Players in your room : </h4><h4 id="players-list"></h4>
         <hr/>
-        <br/>
         <div id="room-controls" class="room-controls">
         <button type="button" onClick="CreateRoom()" class="btn btn-primary">Create Room</button>
         <br/><br/>
@@ -45,17 +47,21 @@
         </div>
         <br/>
         <button type="button" onClick="JoinRoom()" class="btn btn-info">Join Room</button>
-        <br/><br/>
         </div>
+        <br/>
         <button type="button" onClick="ShowRooms()" class="btn btn-dark">Show Rooms</button>
-        <br/><br/>
-        <button type="button" onClick="LeaveRoom()" class="btn btn-danger">Leave Room</button>
-        <hr/>
-        </div>
-        <div id="launch-game" class="launch-game">
-        <button type="button" onClick="LaunchGame()" class="btn-lg btn-success">Launch Game</button>
         </div>
 
+        <div id="leave-section" class="leave-section">
+          <button type="button" onClick="LeaveRoom()" class="btn btn-danger">Leave Room</button>
+        </div>
+
+        <div id="launch-game" class="launch-game">
+          <hr/>
+          <button type="button" onClick="LaunchGame()" class="btn-lg btn-success">Launch Game</button>
+        </div>
+
+        <br/>
     </div>
 </body>
 </html>
