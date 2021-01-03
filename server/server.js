@@ -138,13 +138,15 @@ io.sockets.on('connection', function(socket) {
 
       players_set = io.sockets.adapter.rooms.get(currentRoomId)
       tmp_users = []
+      tmp_ids = []
       if (players_set !== undefined){
         players_set.forEach(element => {
         tmp_users.push(users[element])
+        tmp_ids.push(element)
         });
       }
 
-      const new_game = new GameManagement(tmp_users,currentRoomId)
+      const new_game = new GameManagement(tmp_users,tmp_ids,currentRoomId)
       games_list.push({
         key: currentRoomId,
         value: new_game
@@ -153,19 +155,33 @@ io.sockets.on('connection', function(socket) {
     })
 });
 
-class GameManagement {
-     constructor(users_list,Room_ID){
-        this.game_users_list = users_list
-        this.room = Room_ID
-        this.socket = 
-
-        this.AssignRoles()
-     }
-
-    AssignRoles(){
-        var traitor = this.game_users_list[Math.floor(Math.random() * this.game_users_list.length)]
-        console.log(traitor)
-        io.sockets.to(this.room).emit('roles', traitor)
-    }
+function shuffle(array) {
+  var tmp, current, top = array.length;
+  if(top) while(--top) {
+    current = Math.floor(Math.random() * (top + 1));
+    tmp = array[current];
+    array[current] = array[top];
+    array[top] = tmp;
+  }
+  return array;
 }
 
+class GameManagement {
+     constructor(game_users_list,game_users_ids,room){
+        this.game_users_list = game_users_list
+        this.number_of_users = game_users_list.length
+        this.game_users_ids = game_users_ids
+        this.room = room
+        this.giveRoles()
+        //this.timer = setInterval(this.IntervalFunction.bind(this), 15000)
+     }
+
+     giveRoles(){
+      var roles = shuffle(this.game_users_list)
+      io.sockets.to(this.room).emit('roles',roles)
+     }
+
+     //IntervalFunction(){
+
+     //}
+}

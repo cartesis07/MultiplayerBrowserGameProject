@@ -1,14 +1,11 @@
 var socket = io.connect();
-
 var current_room = "";
-
 var my_username = "";
-
 var players_list = [];
-
 var administrator = false;
+var my_role = undefined;
 
-var role = "";
+var ressources = ["Wood",]
 
 socket.on('room-id', function(room_id) {
     current_room = room_id;
@@ -57,7 +54,7 @@ function ShowRooms(){
 function SendUsername(){
     my_username = document.getElementById("input-username").value
 
-    if (my_username !== ""){
+    if (my_username !== "" && my_username.length < 12){
         socket.emit('send-username', my_username)
     
         Hide("first-action")
@@ -103,28 +100,60 @@ function Hide(block){
 //administrator launch the game
 function LaunchGame(){
     socket.emit('launch-game');
-    Hide("lobby")
-    Hide("launch-game")
-    Hide("leave-section")
 }
 
 //game launched by the administrator
 socket.on('game-launched', () => {
-    if (administrator === false){
-        Hide("lobby")
-        Hide("launch-game")
-        Hide("leave-section")
+    Hide("lobby")
+    Hide("launch-game")
+    Hide("leave-section")
+    Display("the-game")
+
+    for(let i = 0; i < players_list.length; i++){
+        var button = document.createElement("button");
+        button.type = "button"
+        button.className="btn btn-dark"
+        button.innerHTML=players_list[i]
+
+        var element = document.getElementById("players-interactions");
+        element.appendChild(button);  
     }
 })
 
-//get roles for the game
-socket.on('roles', function(traitor){
-    if(traitor === my_username){
-        document.getElementById("role-information").innerHTML = "You are the impostor"
-        Display("role-information")
+socket.on('roles', function(roles) {
+    if (my_username === roles[0]){
+        my_role = "Boss"
+    }
+    if (my_username === roles[1]){
+        my_role = "Assassin"
+    }
+    if (players_list.length % 2 === 0){
+        var lambda = Math.floor((players_list.length - 2) / 2)
     }
     else{
-        document.getElementById("role-information").innerHTML = "You are a crewmate"
-        Display("role-information")
+        var lambda = Math.floor((players_list.length - 2) / 2) + 1
     }
+    for (let i = 0; i < lambda ; i++){
+        if(my_username === roles[i + 2]){
+            my_role = "Secret Agent"
+        }
+    }
+    for (let i = lambda; i < players_list.length; i++){
+        if(my_username === roles[i + 2]){
+            my_role = "Counter Agent"
+        }
+    }
+    document.getElementById('players-roles').innerHTML = my_role
 })
+
+function ShowMyRole(){
+    var x = document.getElementById("players-roles");
+    var y = document.getElementById("role-button");
+    if (x.style.display === "none") {
+        x.style.display = "block";
+        y.innerHTML = "Hide my role"
+    } else {
+        x.style.display = "none";
+        y.innerHTML = "Show my role"
+    }
+}
