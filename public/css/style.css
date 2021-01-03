@@ -4,6 +4,7 @@
     text-align: center;
     width: 80%;
     margin-top: 30px;
+    margin-bottom: 30px;
 }
 
 .first-action {
@@ -61,7 +62,21 @@ figure {
     justify-content: center;
 }
 
+.targets{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 img{
     height: 5em;
     width: 5em;
+}
+
+.boss-controls{
+    display: none;
+}
+
+.assassin-controls{
+    display: none;
 }
