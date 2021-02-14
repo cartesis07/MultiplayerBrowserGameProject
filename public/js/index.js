@@ -160,33 +160,3 @@ function ShowMyRole(){
         y.innerHTML = "Show my role"
     }
 }
-
-function DisplayControls(){
-    if(my_role === "Assassin"){
-        var select = document.getElementById("assassin-select")
-        for(let i = 0 ; i < players_list.length ;  i++){
-            var option = document.createElement("option");
-            option.text = players_list[i];
-            select.appendChild(option);
-        }
-        Display("assassin-controls")
-    }
-    if(my_role === "Boss"){
-        var select = document.getElementById("boss-select")
-        for(let i = 0 ; i < players_list.length ;  i++){
-            var option = document.createElement("option");
-            option.text = players_list[i];
-            select.appendChild(option);
-        }
-        Display("boss-controls")
-        BossRevenue()
-
-    }
-}
-
-function BossRevenue(){
-    setInterval(() => {
-        my_influence = my_influence + 1;
-        document.getElementById("influence-amount").innerHTML = my_influence.toString();
-    }, 8000);
-}
