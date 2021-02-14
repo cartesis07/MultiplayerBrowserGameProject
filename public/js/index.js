@@ -2,6 +2,7 @@ var socket = io.connect();
 var current_room = "";
 var my_username = "";
 var players_list = [];
+var roles_list = [];
 var administrator = false;
 var my_role = undefined;
 var my_influence = 0;
@@ -120,43 +121,3 @@ socket.on('game-launched', () => {
         element.appendChild(button);  
     }
 })
-
-socket.on('roles', function(roles) {
-    if (my_username === roles[0]){
-        my_role = "Boss"
-    }
-    if (my_username === roles[1]){
-        my_role = "Assassin"
-    }
-    if (players_list.length % 2 === 0){
-        var lambda = Math.floor((players_list.length - 2) / 2)
-    }
-    else{
-        var lambda = Math.floor((players_list.length - 2) / 2) + 1
-    }
-    for (let i = 0; i < lambda ; i++){
-        if(my_username === roles[i + 2]){
-            my_role = "Secret Agent"
-        }
-    }
-    for (let i = lambda; i < players_list.length; i++){
-        if(my_username === roles[i + 2]){
-            my_role = "Counter Agent"
-        }
-    }
-    document.getElementById('players-roles').innerHTML = my_role
-
-    DisplayControls()
-})
-
-function ShowMyRole(){
-    var x = document.getElementById("players-roles");
-    var y = document.getElementById("role-button");
-    if (x.style.display === "none") {
-        x.style.display = "block";
-        y.innerHTML = "Hide my role"
-    } else {
-        x.style.display = "none";
-        y.innerHTML = "Show my role"
-    }
-}

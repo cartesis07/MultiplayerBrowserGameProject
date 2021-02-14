@@ -182,6 +182,5 @@ class GameManagement {
      }
 
      //IntervalFunction(){
-
      //}
 }
