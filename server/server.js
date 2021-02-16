@@ -172,21 +172,12 @@ class GameManagement {
         this.number_of_users = game_users_list.length
         this.game_users_ids = game_users_ids
         this.room = room
+        //this.timer = setTimeout(this.stopNegotation.bind(this), 30000)
         this.giveRoles()
-        this.startGame()
      }
 
      giveRoles(){
       var roles = shuffle(this.game_users_list)
       io.sockets.to(this.room).emit('roles',roles)
-     }
-
-     startGame(){
-      io.sockets.to(this.room).emit('start-negotiation')
-      this.timer = setTimeout(this.stopNegotation.bind(this), 30000)
-     }
-
-     stopNegotation(){
-       io.sockets.to(this.room).emit('stop-negotiation')
      }
 }
