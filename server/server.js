@@ -173,7 +173,7 @@ class GameManagement {
         this.game_users_ids = game_users_ids
         this.room = room
         this.giveRoles()
-        //this.timer = setInterval(this.IntervalFunction.bind(this), 15000)
+        this.startGame()
      }
 
      giveRoles(){
@@ -181,6 +181,12 @@ class GameManagement {
       io.sockets.to(this.room).emit('roles',roles)
      }
 
-     //IntervalFunction(){
-     //}
+     startGame(){
+      io.sockets.to(this.room).emit('start-negotiation')
+      this.timer = setTimeout(this.stopNegotation.bind(this), 30000)
+     }
+
+     stopNegotation(){
+       io.sockets.to(this.room).emit('stop-negotiation')
+     }
 }
