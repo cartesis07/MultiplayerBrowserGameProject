@@ -5,9 +5,8 @@ var players_list = [];
 var roles_list = [];
 var administrator = false;
 var my_role = undefined;
-var my_influence = 0;
 
-var ressources = ["Wood",]
+role_hidden = false;
 
 socket.on('room-id', function(room_id) {
     current_room = room_id;
@@ -104,6 +103,18 @@ function LaunchGame(){
     socket.emit('launch-game');
 }
 
+function HideAndShowRole(){
+    if(role_hidden === false){
+        Hide("my-role")
+        document.getElementById("role-button").innerHTML = "Show Role"
+    }
+    else{
+        Display("my-role")
+        document.getElementById("role-button").innerHTML = "Hide Role"
+    }
+    role_hidden = !role_hidden
+}
+
 //game launched by the administrator
 socket.on('game-launched', () => {
     Hide("lobby")
@@ -120,4 +131,18 @@ socket.on('game-launched', () => {
         var element = document.getElementById("players-interactions");
         element.appendChild(button);  
     }
+})
+
+socket.on('roles', (roles) => {
+    roles_list = roles
+    const usernameCompare = (element) => element == my_username;
+    var index = roles_list.findIndex(usernameCompare)
+    if (index == 0){
+        my_role = "Traitor"
+    }
+    else {
+        my_role = "Crewmate"
+    }
+    document.getElementById("my-role").innerHTML = my_role;
+    Display("my-role")
 })
