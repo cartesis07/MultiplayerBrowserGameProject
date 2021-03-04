@@ -5,6 +5,7 @@ var players_list = [];
 var roles_list = [];
 var administrator = false;
 var my_role = undefined;
+var cards_dictionary = undefined;
 
 role_hidden = false;
 
@@ -115,6 +116,35 @@ function HideAndShowRole(){
     role_hidden = !role_hidden
 }
 
+function NumberInList(){
+    for (let i = 0 ; i < players_list.length ; i++){
+        if (players_list[i] === my_username){
+            return i;
+        }
+    }
+}
+
+function UpdateMyCards(list){
+    var influence = document.getElementById("my-influence")
+    //Clearing all cards
+    influence.innerHTML = ""
+    for (let i = 0 ; i < list.length ; i++){
+        var card = document.createElement("div")
+        card.className="card"
+        var logo = document.createElement("i")
+        logo.className="fas fa-burn fa-4x"
+        card.appendChild(logo)
+        var div_container = document.createElement("container")
+        div_container.innerHTML = "<h4><b>"+ list[i] +"<b/><h4/>"
+        card.appendChild(div_container)
+        influence.appendChild(card)
+    }
+} 
+
+function updateModal(player_number){
+    document.getElementById("exampleModalLabel").innerText = "This player has " + cards_dictionary[player_number].length + " cards"
+}
+
 //game launched by the administrator
 socket.on('game-launched', () => {
     Hide("lobby")
@@ -127,6 +157,9 @@ socket.on('game-launched', () => {
         button.type = "button"
         button.className="btn btn-dark"
         button.innerHTML=players_list[i]
+        button.setAttribute("data-toggle","modal")
+        button.setAttribute("data-target","#exampleModal")
+        button.setAttribute("onClick","updateModal(" + i + ")")
 
         var element = document.getElementById("players-interactions");
         element.appendChild(button);  
@@ -145,4 +178,13 @@ socket.on('roles', (roles) => {
     }
     document.getElementById("my-role").innerHTML = my_role;
     Display("my-role")
+})
+
+socket.on('cards', (cards_dict) => {
+    cards_dictionary = cards_dict
+    UpdateMyCards(cards_dict[NumberInList()])
+})
+
+socket.on('duo',(random_players) => {
+    var duo = document.getElementById("duo").innerHTML = "<h4>The selected duo is " + players_list[random_players.rnd1] + " and " + players_list[random_players.rnd2] + "</h4>"
 })

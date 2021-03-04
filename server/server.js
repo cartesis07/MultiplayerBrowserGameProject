@@ -6,6 +6,37 @@ const socketIO = require('socket.io');
 const publicPath = path.join(__dirname, '/../public');
 const port = process.env.PORT || 3000;
 
+//list of all influence cards
+let cards = [1,2,4,8]
+
+//list of all objective
+let objectives = {
+
+//Area 1 objectives
+1: {value: 0, positive: "", negative: ""},
+2: {value: 0, positive: "", negative: ""},
+3: {value: 0, positive: "", negative: ""},
+4: {value: 0, positive: "", negative: ""},
+5: {value: 0, positive: "", negative: ""},
+6: {value: 0, positive: "", negative: ""},
+
+//Area 2 objectives
+7: {value: 0, positive: "", negative: ""},
+8: {value: 0, positive: "", negative: ""},
+9: {value: 0, positive: "", negative: ""},
+10: {value: 0, positive: "", negative: ""},
+11: {value: 0, positive: "", negative: ""},
+12: {value: 0, positive: "", negative: ""},
+
+//Area 3 objectives
+13: {value: 0, positive: "", negative: ""},
+14: {value: 0, positive: "", negative: ""},
+15: {value: 0, positive: "", negative: ""},
+16: {value: 0, positive: "", negative: ""},
+17: {value: 0, positive: "", negative: ""},
+18: {value: 0, positive: "", negative: ""}
+}
+
 //list of connected users
 let users = {};
 
@@ -171,13 +202,37 @@ class GameManagement {
         this.game_users_list = game_users_list
         this.number_of_users = game_users_list.length
         this.game_users_ids = game_users_ids
+        this.card_dictionary = []
         this.room = room
         //this.timer = setTimeout(this.stopNegotation.bind(this), 30000)
         this.giveRoles()
+        this.distributeCards()
+        this.randomDuo()
      }
 
      giveRoles(){
       var roles = shuffle(this.game_users_list)
       io.sockets.to(this.room).emit('roles',roles)
+     }
+
+     distributeCards(){
+       for(let i = 0; i < this.number_of_users; i++){
+         var cards_hand = []
+         for(let i = 0 ; i < 5 ; i++){
+           var random = cards[Math.floor(Math.random() * cards.length)];
+           cards_hand.push(random)
+         }
+         this.card_dictionary.push(cards_hand)
+       }
+       io.sockets.to(this.room).emit('cards',this.card_dictionary)
+     }
+
+     randomDuo(){
+       var random_player1 = Math.floor(Math.random() * this.game_users_list.length);
+       var random_player2 = random_player1
+       while(random_player2 === random_player1){
+        random_player2 = Math.floor(Math.random() * this.game_users_list.length);
+       }
+       io.sockets.to(this.room).emit('duo', {rnd1: random_player1,rnd2: random_player2})
      }
 }
