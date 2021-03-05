@@ -209,6 +209,7 @@ class GameManagement {
         this.energy_choice = []
         this.roles_list = []
         this.cards_selected = []
+        this.daemons = []
         //this.timer = setTimeout(this.stopNegotation.bind(this), 30000)
         this.giveRoles()
         this.distributeCards()

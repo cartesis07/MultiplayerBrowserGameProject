@@ -93,10 +93,6 @@
     display: block;
 }
 
-.active{
-    background-color: #ff0000;
-}
-
 .modal-content{
     overflow-x: scroll;
     max-height: 500px;

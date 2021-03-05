@@ -146,9 +146,11 @@ function NumberInList(){
 function SelectCard(nb){
     if(hand_select[nb] == 1){
         hand_select[nb] = 0
+        document.getElementById("influence-card-" + nb).style.outline= ""
     }
     else{
         hand_select[nb] = 1
+        document.getElementById("influence-card-" + nb).style.outline= "2px solid rgb(0, 0, 143)"
     }
 }
 
@@ -163,7 +165,9 @@ function UpdateMyCards(list){
         hand_select.push(0)
 
         var card = document.createElement("div")
-        card.className="card"
+        card.className = "card"
+        card.setAttribute("onClick","SelectCard(" + i + ")")
+        card.id = "influence-card-" + i
         var logo = document.createElement("i")
         logo.className="fas fa-burn fa-4x"
         card.appendChild(logo)
@@ -171,12 +175,6 @@ function UpdateMyCards(list){
         div_container.className="container"
         div_container.innerHTML = "<h4><b>"+ list[i] +"<b/><h4/>"
         card.appendChild(div_container)
-        var checkbox = document.createElement("div")
-        var input = document.createElement("input")
-        input.setAttribute("type","checkbox")
-        input.setAttribute("onClick","SelectCard(" + i + ")")
-        checkbox.appendChild(input)
-        card.appendChild(checkbox)
         influence.appendChild(card)
     }
 } 
