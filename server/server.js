@@ -210,6 +210,8 @@ class GameManagement {
         this.roles_list = []
         this.cards_selected = []
         this.daemons = []
+        this.random_player1 = undefined
+        this.random_player2 = undefined
         //this.timer = setTimeout(this.stopNegotation.bind(this), 30000)
         this.giveRoles()
         this.distributeCards()
@@ -248,12 +250,12 @@ class GameManagement {
      }
 
      randomDuo(){
-       var random_player1 = Math.floor(Math.random() * this.game_users_list.length);
-       var random_player2 = random_player1
-       while(random_player2 === random_player1){
-        random_player2 = Math.floor(Math.random() * this.game_users_list.length);
+       this.random_player1 = Math.floor(Math.random() * this.game_users_list.length);
+       this.random_player2 = this.random_player1
+       while(this.random_player2 === this.random_player1){
+        this.random_player2 = Math.floor(Math.random() * this.game_users_list.length);
        }
-       io.sockets.to(this.room).emit('duo', {rnd1: random_player1,rnd2: random_player2})
+       io.sockets.to(this.room).emit('duo', {rnd1: this.random_player1,rnd2: this.random_player2})
       }
 
      resolveEnergy(){
@@ -272,6 +274,13 @@ class GameManagement {
      }
 
      calculateEnergy(){
+      //invert things if they didn't send in the correct order
+      if(this.random_player1 > this.random_player2){
+        var tmp = this.energy_choice[0]
+        this.energy_choice[0] = this.energy_choice[1]
+        this.energy_choice[1] = tmp
+      }
+
        for(let j = 0 ; j < 2; j++){
         for (let i = 0; i < this.energy_choice[j].hand_choice.length ; i++){
           if(this.energy_choice[j].hand_choice[i] == 1){
@@ -282,8 +291,8 @@ class GameManagement {
         this.card_dictionary[j] = this.card_dictionary[j].filter(function (el) {
           return el != null;
         });
-        
        }
+
        this.energy_choice = []
        this.updateCards();
      }
