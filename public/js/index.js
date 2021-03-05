@@ -6,6 +6,8 @@ var roles_list = [];
 var administrator = false;
 var my_role = undefined;
 var cards_dictionary = undefined;
+var my_hand = undefined;
+var hand_select = undefined;
 
 role_hidden = false;
 
@@ -25,7 +27,11 @@ socket.on('players-list', function(users_list){
 });
 
 socket.on('alert-room', () => {
-    alert("Sorry, this room does not exist")
+    Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Sorry, this room does not exist !',
+      })
 })
 
 function CreateRoom() {
@@ -63,7 +69,11 @@ function SendUsername(){
         Display("room-controls")
     }
     else{
-        alert("Please, enter a valid username.")
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Please, enter a valid username !',
+          })
     }
 }
 
@@ -101,7 +111,16 @@ function Hide(block){
 
 //administrator launch the game
 function LaunchGame(){
-    socket.emit('launch-game');
+    if(players_list.length < 2){
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'You have to be at least 2 players in the room to launch this game !',
+          })
+    }
+    else{
+        socket.emit('launch-game');
+    }
 }
 
 function HideAndShowRole(){
@@ -124,25 +143,51 @@ function NumberInList(){
     }
 }
 
+function SelectCard(nb){
+    if(hand_select[nb] == 1){
+        hand_select[nb] = 0
+    }
+    else{
+        hand_select[nb] = 1
+    }
+}
+
 function UpdateMyCards(list){
     var influence = document.getElementById("my-influence")
-    //Clearing all cards
+    //Clearing all cards and hand selection
     influence.innerHTML = ""
+    hand_select = []
+
     for (let i = 0 ; i < list.length ; i++){
+
+        hand_select.push(0)
+
         var card = document.createElement("div")
         card.className="card"
         var logo = document.createElement("i")
         logo.className="fas fa-burn fa-4x"
         card.appendChild(logo)
-        var div_container = document.createElement("container")
+        var div_container = document.createElement("div")
+        div_container.className="container"
         div_container.innerHTML = "<h4><b>"+ list[i] +"<b/><h4/>"
         card.appendChild(div_container)
+        var checkbox = document.createElement("div")
+        var input = document.createElement("input")
+        input.setAttribute("type","checkbox")
+        input.setAttribute("onClick","SelectCard(" + i + ")")
+        checkbox.appendChild(input)
+        card.appendChild(checkbox)
         influence.appendChild(card)
     }
 } 
 
 function updateModal(player_number){
-    document.getElementById("exampleModalLabel").innerText = "This player has " + cards_dictionary[player_number].length + " cards"
+    document.getElementById("exampleModalLabel").innerText = players_list[player_number] + " has " + cards_dictionary[player_number].length + " energy cards"
+}
+
+function SendEnergy(){
+    socket.emit('energy',{room: current_room, player: NumberInList(), hand_choice: hand_select})
+    Hide("send-energy")
 }
 
 //game launched by the administrator
@@ -182,9 +227,13 @@ socket.on('roles', (roles) => {
 
 socket.on('cards', (cards_dict) => {
     cards_dictionary = cards_dict
+    my_hand = cards_dict[NumberInList()]
     UpdateMyCards(cards_dict[NumberInList()])
 })
 
 socket.on('duo',(random_players) => {
     var duo = document.getElementById("duo").innerHTML = "<h4>The selected duo is " + players_list[random_players.rnd1] + " and " + players_list[random_players.rnd2] + "</h4>"
+    if(players_list[random_players.rnd1] === my_username || players_list[random_players.rnd2] === my_username){
+        Display("send-energy")
+    }
 })

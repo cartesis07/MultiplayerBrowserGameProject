@@ -10,6 +10,7 @@
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
   <script src="https://kit.fontawesome.com/333c158c66.js" crossorigin="anonymous"></script>
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
   <script src="/socket.io/socket.io.js"></script>
   <script src="./js/index.js"></script>
 </head>
@@ -77,15 +78,9 @@
 
           <hr/>
 
-          <div id="area" className="area"><h4>Area 1</h4>
+          <div id="area" className="area"><h4>Era 1</h4>
           </div>
           <div id="duo" className="duo">
-          </div>
-
-          <hr/>
-
-          <div class="progress">
-            <div class="progress-bar w-25" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
           </div>
 
           <hr/>
@@ -93,40 +88,55 @@
           <div id="my-influence" className="my-influence">
           </div>
 
+          <div id="send-energy" class="send-energy">
+            <button type="button" onClick="SendEnergy()" class="btn btn-success">Send Energy</button>
+          </div>
+
           <div class="objective-to-do">
-
-            <button type="button" onClick="Validate()" class="btn btn-success">Validate</button>
-
           <div class="card">
-            <i class="fas fa-bullseye fa-4x"></i>
+            <img src="./ressources/1.jpeg" alt="Avatar" style="width:100%">
             <div class="container">
-               <h4><b>12 points</b></h4>
-               <p>Positive effect : Do something</p>
-               <p>Negative effect : Do something</p>
+               <h4><b>Agamator : 12 points</b></h4>
+               <p>Action : Make a player discard a card</p>
             </div>
             </div>
           </div>
+
+
 
         </div>
     </div>
 
 <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+<div class="modal fade bd-example-modal-lg" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">This player has 4 cards</h5>
+        <h5 class="modal-title" id="exampleModalLabel">...</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
+
+      <div class="modal-body">
+
+        <div class="card">
+          <img src="./ressources/2.jpeg" alt="Avatar" style="width:100%"></img>
+          <div class="container">
+             <h4><b>Zborg : 12 points</b></h4>
+             <p>Action : Make a player discard a card</p>
+          </div>
+        </div>
+
+      </div>
+
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
       </div>
     </div>
   </div>
 </div>
-
 
 
 </body>
