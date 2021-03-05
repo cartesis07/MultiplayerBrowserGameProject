@@ -9,27 +9,23 @@ const port = process.env.PORT || 3000;
 //list of all influence cards
 let cards = [1,2,4,6]
 
-//list of all objective
+//list of all objectives
 let objectives = {
 
-//Area 1 objectives
-1: {value: 6, power:"Make a player discard a card"},
-2: {value: 6, power:"Steal a card from someone else"},
-3: {value: 6, power:"Make two players draw one card each"},
-
-//Area 2 objectives
-4: {value: 10, power:""},
-5: {value: 10, power:""},
-6: {value: 10, power:""},
-
-//Area 3 objectives
-7: {value: 16, power:""},
-8: {value: 16, power:""},
-9: {value: 16, power:""},
-
-//Last objective
-10: {value: 0, power:""}
-
+  //Area 1 objectives
+  1: {name: "1", value: 6, power: "Make a player discard a card", cost: 0},
+  2: {name: "1", value: 6, power: "Steal a card from someone else", cost: 0},
+  3: {name: "1", value: 6, power: "Make two players draw one card each", cost: 0},
+  
+  //Area 2 objectives
+  4: {name: "1", value: 10, power:"Choose one of the two next priests", cost: 2},
+  5: {name: "1", value: 10, power:"Exchange this god against another on the table", cost: 1},
+  6: {name: "1", value: 10, power:"Secretly, look at the religious alignement of somebody", cost: 2},
+  
+  //Area 3 objectives
+  7: {name: "1", value: 16, power:"Kill a daemon", cost: 3},
+  8: {name: "1", value: 16, power:"Steal a daemon", cost: 3},
+  9: {name: "1", value: 16, power:"Choose the next two priests", cost: 4},
 }
 
 //list of connected users
@@ -205,20 +201,24 @@ class GameManagement {
         this.number_of_users = game_users_list.length
         this.game_users_ids = game_users_ids
         this.card_dictionary = []
+        this.gods_dictionary = []
         this.room = room
         this.energy_choice = []
         this.roles_list = []
         this.cards_selected = []
-        this.daemons = []
         this.random_player1 = undefined
         this.random_player2 = undefined
+        this.era = 1
+        this.era1 = [1,2,3]
+        this.era2 = [4,5,6]
+        this.era3 = [7,8,9]
+        this.current_god = undefined
+        this.success = undefined
         //this.timer = setTimeout(this.stopNegotation.bind(this), 30000)
         this.giveRoles()
         this.distributeCards()
 
-        this.firstArea()
-        //this.secondArea()
-        //this.thirdArea()
+        this.randomDuo()
 
         //this.lastVote()
      }
@@ -244,10 +244,13 @@ class GameManagement {
       io.sockets.to(this.room).emit('cards',this.card_dictionary)
      }
 
-    firstArea(){
-      this.randomDuo()
-      this.resolveEnergy()
-     }
+      //between a lot of these steps, we apply an update of the cards distribution
+        //this.randomDuo()
+        //this.randomGod()
+        //this.resolveEnergy()
+        //this.vote()
+        //this.resolvePowers()
+        //this.resolveGods()
 
      randomDuo(){
        this.random_player1 = Math.floor(Math.random() * this.game_users_list.length);
@@ -256,9 +259,28 @@ class GameManagement {
         this.random_player2 = Math.floor(Math.random() * this.game_users_list.length);
        }
        io.sockets.to(this.room).emit('duo', {rnd1: this.random_player1,rnd2: this.random_player2})
+       this.randomGod()
       }
 
-     resolveEnergy(){
+      randomGod(){
+          switch(this.era){
+            case 1:
+              this.current_god = this.era1[Math.floor(Math.random() * this.era1.length)];
+              io.sockets.to(this.room).emit('god', this.current_god)
+              break
+            case 2:
+              this.current_god = this.era2[Math.floor(Math.random() * this.era2.length)];
+              io.sockets.to(this.room).emit('god', this.current_god)
+              break
+            case 3:
+              this.current_god = this.era3[Math.floor(Math.random() * this.era3.length)];
+              io.sockets.to(this.room).emit('god', this.current_god)
+              break
+          }
+          this.resolveEnergy();
+      }
+
+    resolveEnergy(){
         for(let i = 0; i < energy_choices.length; i++){
           if(energy_choices[i].room == this.room){
               this.energy_choice.push(energy_choices[i])
@@ -273,7 +295,7 @@ class GameManagement {
         }
      }
 
-     calculateEnergy(){
+    calculateEnergy(){
       //invert things if they didn't send in the correct order
       if(this.random_player1 > this.random_player2){
         var tmp = this.energy_choice[0]
@@ -294,6 +316,32 @@ class GameManagement {
        }
 
        this.energy_choice = []
+
        this.updateCards();
+       this.sendResult();
      }
+
+     sendResult(){
+       var result = 0
+       for(let i = 0; i < this.cards_selected.length; i++){
+          result += this.cards_selected[i]
+       }
+       if(result >= objectives[this.current_god].value){
+          this.success = true
+       }
+       else{
+          this.success = false
+       }
+       io.sockets.to(this.room).emit('result', {power: result,bool: this.success})
+       if(this.success === true){
+         this.vote()
+       }
+       else{
+         //this.resolvePowers()
+       }
+      }
+
+      vote(){
+          io.sockets.to(this.room).emit('start-vote')
+      }
 }

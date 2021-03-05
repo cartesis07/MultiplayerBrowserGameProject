@@ -90,17 +90,33 @@
 
           <div id="send-energy" class="send-energy">
             <button type="button" onClick="SendEnergy()" class="btn btn-success">Send Energy</button>
-            <br/>
           </div>
 
-          <div class="objective-to-do">
-          <div class="card">
+          <div class="vote" id="vote">
+          <div class="form-group">
+            <label for="exampleFormControlSelect1">Vote for one player that will acquire this daemon !</label>
+            <select class="form-control" id="exampleFormControlSelect1">
+              <option>1</option>
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
+              <option>5</option>
+            </select>
+            </br>
+            <button type="button" onClick="Vote()" class="btn btn-success">Vote</button>
+          </div>
+        </div>
+          
+          <div id="objective-to-do" class="objective-to-do">
+
+          <!--<div class="card">
             <img src="./ressources/1.jpeg" alt="Avatar" style="width:100%">
             <div class="container">
                <h4><b>Agamator : 12 points</b></h4>
                <p>Action : Make a player discard a card</p>
             </div>
-            </div>
+            </div>-->
+
           </div>
 
 

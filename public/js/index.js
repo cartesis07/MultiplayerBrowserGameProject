@@ -9,6 +9,25 @@ var cards_dictionary = undefined;
 var my_hand = undefined;
 var hand_select = undefined;
 
+//list of all objectives
+let objectives = {
+
+    //Area 1 objectives
+    1: {name: "Agamator", value: 6, power: "Make a player discard a card", cost: 0},
+    2: {name: "Kthera", value: 6, power: "Steal a card from someone else", cost: 0},
+    3: {name: "Zobi", value: 6, power: "Make two players draw one card each", cost: 0},
+    
+    //Area 2 objectives
+    4: {name: "1", value: 10, power:"Choose one of the two next priests", cost: 2},
+    5: {name: "1", value: 10, power:"Exchange this god against another on the table", cost: 1},
+    6: {name: "1", value: 10, power:"Secretly, look at the religious alignement of somebody", cost: 2},
+    
+    //Area 3 objectives
+    7: {name: "1", value: 16, power:"Kill a daemon", cost: 3},
+    8: {name: "1", value: 16, power:"Steal a daemon", cost: 3},
+    9: {name: "1", value: 16, power:"Choose the next two priests", cost: 4},
+}
+
 role_hidden = false;
 
 socket.on('room-id', function(room_id) {
@@ -150,7 +169,7 @@ function SelectCard(nb){
     }
     else{
         hand_select[nb] = 1
-        document.getElementById("influence-card-" + nb).style.outline= "2px solid rgb(0, 0, 143)"
+        document.getElementById("influence-card-" + nb).style.outline= "1px solid rgb(0, 0, 143)"
     }
 }
 
@@ -186,6 +205,10 @@ function updateModal(player_number){
 function SendEnergy(){
     socket.emit('energy',{room: current_room, player: NumberInList(), hand_choice: hand_select})
     Hide("send-energy")
+    // Swal.fire({
+    //     icon: 'success',
+    //     title: 'Energy sent',
+    // })
 }
 
 //game launched by the administrator
@@ -215,9 +238,17 @@ socket.on('roles', (roles) => {
     var index = roles_list.findIndex(usernameCompare)
     if (index == 0){
         my_role = "Traitor"
+        // Swal.fire({
+        //     icon: 'info',
+        //     title: 'You are a traitor !',
+        // })
     }
     else {
         my_role = "Crewmate"
+        // Swal.fire({
+        //     icon: 'info',
+        //     title: 'You are a crewmate !',
+        // })
     }
     document.getElementById("my-role").innerHTML = my_role;
     Display("my-role")
@@ -230,8 +261,55 @@ socket.on('cards', (cards_dict) => {
 })
 
 socket.on('duo',(random_players) => {
-    var duo = document.getElementById("duo").innerHTML = "<h4>The selected duo is " + players_list[random_players.rnd1] + " and " + players_list[random_players.rnd2] + "</h4>"
+    var duo = document.getElementById("duo").innerHTML = "<h5>The selected duo is " + players_list[random_players.rnd1] + " and " + players_list[random_players.rnd2] + "</h5>"
     if(players_list[random_players.rnd1] === my_username || players_list[random_players.rnd2] === my_username){
         Display("send-energy")
     }
+})
+
+socket.on('god', (god) => {
+    var objective = document.getElementById("objective-to-do")
+    objective.innerHTML = ""
+
+    var card = document.createElement("div")
+    card.setAttribute("class","card")
+
+    var image = document.createElement("img")
+    image.src="./ressources/" + god + ".jpeg"
+    image.style = "width:100%"
+    card.appendChild(image)
+
+    var div_container = document.createElement("div")
+    div_container.setAttribute("class","container")
+    div_container.innerHTML = "<h5><b>"+ objectives[god].name + "</br>" + "Power " + objectives[god].value +"<b/><h5/><p> " + objectives[god].power + " </p>"
+    card.appendChild(div_container)
+
+    objective.appendChild(card)
+})
+
+socket.on('result', (results) => {
+    console.log(results)
+    if(results.bool === true){
+        Swal.fire({
+            icon: 'info',
+            title: 'This deamon has been beaten !',
+            text: 'The duo sent ' + results.power + ' energy'
+          })
+    }
+    else{
+        Swal.fire({
+            icon: 'info',
+            title: 'This deamon has not been beaten !',
+            text: 'The duo sent ' + results.power + ' energy'
+        })
+        document.getElementById("objective-to-do").innerHTML = ""
+    }
+    var new_line = document.createElement("div")
+    new_line.innerHTML = "<h5>The duo sent " + results.power + " energy </h4>"
+
+    document.getElementById("duo").appendChild(new_line)
+})
+
+socket.on('start-vote', () => {
+    Display("vote")
 })

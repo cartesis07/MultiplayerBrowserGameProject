@@ -91,6 +91,7 @@
 
 .objective-to-do{
     display: block;
+    margin-top: 40px;
 }
 
 .modal-content{
@@ -99,5 +100,9 @@
 }
 
 .send-energy{
+    display: none;
+}
+
+.vote{
     display: none;
 }
