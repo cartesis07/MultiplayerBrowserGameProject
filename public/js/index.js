@@ -8,6 +8,8 @@ var my_role = undefined;
 var cards_dictionary = undefined;
 var my_hand = undefined;
 var hand_select = undefined;
+var duo1 = undefined
+var duo2 = undefined
 
 //list of all objectives
 let objectives = {
@@ -211,6 +213,16 @@ function SendEnergy(){
     // })
 }
 
+function Vote(){
+    socket.emit('vote',{room: current_room, vote: document.getElementById("exampleFormControlSelect1").value})
+    Hide("send-energy")
+    //Swal.fire({
+    //     icon: 'success',
+    //     title: 'Vote sent',
+    //})
+    Hide("vote")
+}
+
 //game launched by the administrator
 socket.on('game-launched', () => {
     Hide("lobby")
@@ -261,6 +273,8 @@ socket.on('cards', (cards_dict) => {
 })
 
 socket.on('duo',(random_players) => {
+    duo1 = players_list[random_players.rnd1]
+    duo2 = players_list[random_players.rnd2]
     var duo = document.getElementById("duo").innerHTML = "<h5>The selected duo is " + players_list[random_players.rnd1] + " and " + players_list[random_players.rnd2] + "</h5>"
     if(players_list[random_players.rnd1] === my_username || players_list[random_players.rnd2] === my_username){
         Display("send-energy")
@@ -311,5 +325,13 @@ socket.on('result', (results) => {
 })
 
 socket.on('start-vote', () => {
+    var input = document.getElementById("exampleFormControlSelect1")
+    for (let i = 0 ; i < players_list.length ; i++){
+        if(players_list[i] != duo1 && players_list[i] != duo2){
+            var option = document.createElement("option")
+            option.innerText = players_list[i]
+            input.appendChild(option)
+        }
+    }
     Display("vote")
 })

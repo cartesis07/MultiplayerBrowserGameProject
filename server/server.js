@@ -37,6 +37,9 @@ let games_list = [];
 //list of energy choices for each room
 let energy_choices = []
 
+//list of votes for each room
+let votes_room = []
+
 //call our express function
 let app = express();
 
@@ -180,6 +183,11 @@ io.sockets.on('connection', function(socket) {
 
     socket.on("energy", (choice) => {
         energy_choices.push(choice)
+    })
+
+    socket.on("vote", (vote) => {
+      console.log(votes_room)
+      votes_room.push(vote)
     })
 
 });
