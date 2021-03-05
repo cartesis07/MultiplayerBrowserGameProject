@@ -276,9 +276,13 @@ class GameManagement {
         for (let i = 0; i < this.energy_choice[j].hand_choice.length ; i++){
           if(this.energy_choice[j].hand_choice[i] == 1){
              this.cards_selected.push(this.card_dictionary[j][i])
-             this.card_dictionary[j].splice(i,1)
+             delete this.card_dictionary[j][i]
           }
         }
+        this.card_dictionary[j] = this.card_dictionary[j].filter(function (el) {
+          return el != null;
+        });
+        
        }
        this.energy_choice = []
        this.updateCards();
