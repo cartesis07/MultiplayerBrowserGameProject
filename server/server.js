@@ -13,19 +13,19 @@ let cards = [1,2,4,6]
 let objectives = {
 
   //Area 1 objectives
-  1: {name: "1", value: 6, power: "Make a player discard a card", cost: 0},
-  2: {name: "1", value: 6, power: "Steal a card from someone else", cost: 0},
-  3: {name: "1", value: 6, power: "Make two players draw one card each", cost: 0},
+  0: {name: "Agamator", value: 6, power: "Make a player discard a card", cost: 0},
+  1: {name: "Kthera", value: 6, power: "Steal a card from someone else", cost: 0},
+  2: {name: "Zobi", value: 6, power: "Make two players draw one card each", cost: 0},
   
   //Area 2 objectives
-  4: {name: "1", value: 10, power:"Choose one of the two next priests", cost: 2},
-  5: {name: "1", value: 10, power:"Exchange this god against another on the table", cost: 1},
-  6: {name: "1", value: 10, power:"Secretly, look at the religious alignement of somebody", cost: 2},
+  3: {name: "1", value: 10, power:"Choose one of the two next priests", cost: 2},
+  4: {name: "1", value: 10, power:"Exchange this god against another on the table", cost: 1},
+  5: {name: "1", value: 10, power:"Secretly, look at the religious alignement of somebody", cost: 2},
   
   //Area 3 objectives
-  7: {name: "1", value: 16, power:"Kill a daemon", cost: 3},
-  8: {name: "1", value: 16, power:"Steal a daemon", cost: 3},
-  9: {name: "1", value: 16, power:"Choose the next two priests", cost: 4},
+  6: {name: "1", value: 16, power:"Kill a daemon", cost: 3},
+  7: {name: "1", value: 16, power:"Steal a daemon", cost: 3},
+  8: {name: "1", value: 16, power:"Choose the next two priests", cost: 4},
 }
 
 //list of connected users
@@ -218,11 +218,12 @@ class GameManagement {
         this.random_player1 = undefined
         this.random_player2 = undefined
         this.era = 1
-        this.era1 = [1,2,3]
-        this.era2 = [4,5,6]
-        this.era3 = [7,8,9]
+        this.era1 = [0,1,2]
+        this.era2 = [0,1,2]
+        this.era3 = [0,1,2]
         this.current_god = undefined
         this.success = undefined
+        this.current_area = 0
         //this.timer = setTimeout(this.stopNegotation.bind(this), 30000)
         this.giveRoles()
         this.distributeCards()
@@ -266,7 +267,6 @@ class GameManagement {
         //this.resolveEnergy()
         //this.vote()
         //this.resolvePowers()
-        //this.resolveGods()
 
      randomDuo(){
        this.random_player1 = Math.floor(Math.random() * this.game_users_list.length);
@@ -283,6 +283,7 @@ class GameManagement {
             case 1:
               this.current_god = this.era1[Math.floor(Math.random() * this.era1.length)];
               io.sockets.to(this.room).emit('god', this.current_god)
+              this.era1.splice(this.current_god,1)
               break
             case 2:
               this.current_god = this.era2[Math.floor(Math.random() * this.era2.length)];
@@ -348,13 +349,14 @@ class GameManagement {
        for(let i = 0; i < this.cards_selected.length; i++){
           result += this.cards_selected[i]
        }
-       if(result >= objectives[this.current_god].value){
+       if(result >= objectives[this.current_god + this.current_area*3].value){
           this.success = true
        }
        else{
           this.success = false
        }
        io.sockets.to(this.room).emit('result', {power: result,bool: this.success})
+       this.cards_selected = []
        if(this.success === true){
          this.vote()
        }
@@ -387,8 +389,8 @@ class GameManagement {
           for (let i = 0; i < this.vote_choice.length; i++){
               this.votes_dictionary[this.game_users_list.indexOf(this.vote_choice[i].vote)]++ 
           }
-          this.vote_choice = []
           this.sendVoteResult()
+          this.vote_choice = []
       }
 
       sendVoteResult(){
@@ -408,11 +410,16 @@ class GameManagement {
 
           io.sockets.to(this.room).emit('vote-result', {max: max, index_max: index_max, equality: equality})
 
+          this.votes_dictionary = []
+          for (let i = 0; i < this.game_users_list; i++){
+              this.votes_dictionary.push(0)
+          }
+
           if(equality == false){
-            this.gods_dictionary[index_max].push(this.current_god)
+            this.gods_dictionary[index_max].push(this.current_god + this.current_area*3)
           }
           this.updateGods()
 
-          this.votes_dictionary = []
+          this.randomDuo()
       }
 }

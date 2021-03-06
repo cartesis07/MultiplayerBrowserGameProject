@@ -13,24 +13,25 @@ var hand_select = undefined;
 var duo1 = undefined
 var duo2 = undefined
 var current_god = undefined
+var current_area = 0
 
 //list of all objectives
 let objectives = {
 
     //Area 1 objectives
-    1: {name: "Agamator", value: 6, power: "Make a player discard a card", cost: 0},
-    2: {name: "Kthera", value: 6, power: "Steal a card from someone else", cost: 0},
-    3: {name: "Zobi", value: 6, power: "Make two players draw one card each", cost: 0},
+    0: {name: "Agamator", value: 6, power: "Make a player discard a card", cost: 0},
+    1: {name: "Kthera", value: 6, power: "Steal a card from someone else", cost: 0},
+    2: {name: "Zobi", value: 6, power: "Make two players draw one card each", cost: 0},
     
     //Area 2 objectives
-    4: {name: "1", value: 10, power:"Choose one of the two next priests", cost: 2},
-    5: {name: "1", value: 10, power:"Exchange this god against another on the table", cost: 1},
-    6: {name: "1", value: 10, power:"Secretly, look at the religious alignement of somebody", cost: 2},
+    3: {name: "1", value: 10, power:"Choose one of the two next priests", cost: 2},
+    4: {name: "1", value: 10, power:"Exchange this god against another on the table", cost: 1},
+    5: {name: "1", value: 10, power:"Secretly, look at the religious alignement of somebody", cost: 2},
     
     //Area 3 objectives
-    7: {name: "1", value: 16, power:"Kill a daemon", cost: 3},
-    8: {name: "1", value: 16, power:"Steal a daemon", cost: 3},
-    9: {name: "1", value: 16, power:"Choose the next two priests", cost: 4},
+    6: {name: "1", value: 16, power:"Kill a daemon", cost: 3},
+    7: {name: "1", value: 16, power:"Steal a daemon", cost: 3},
+    8: {name: "1", value: 16, power:"Choose the next two priests", cost: 4},
 }
 
 role_hidden = false;
@@ -209,8 +210,6 @@ function updateModal(player_number){
     var parent = document.getElementById("all-gods")
     parent.innerHTML = ""
     var list = gods_dictionary[player_number]
-    console.log(gods_dictionary)
-    console.log(list)
     for(let i = 0 ; i < list.length ; i++){
         var card = document.createElement("div")
         card.setAttribute("class","card")
@@ -313,6 +312,7 @@ socket.on('duo',(random_players) => {
 
 socket.on('god', (god) => {
     current_god = god
+    var index = current_god + current_area*3
     var objective = document.getElementById("objective-to-do")
     objective.innerHTML = ""
 
@@ -320,20 +320,20 @@ socket.on('god', (god) => {
     card.setAttribute("class","card")
 
     var image = document.createElement("img")
-    image.src="./ressources/" + god + ".jpeg"
+    image.src="./ressources/" + index + ".jpeg"
     image.style = "width:100%"
     card.appendChild(image)
 
     var div_container = document.createElement("div")
     div_container.setAttribute("class","container")
-    div_container.innerHTML = "<h5><b>"+ objectives[god].name + "</br>" + "Power " + objectives[god].value +"<b/><h5/><p> " + objectives[god].power + " </p>"
+    div_container.innerHTML = "<h5><b>"+ objectives[index].name + "</br>" + "Power " + objectives[index].value +"<b/><h5/><p> " + objectives[index].power + " </p>"
     card.appendChild(div_container)
 
     objective.appendChild(card)
+    Display("objective-to-do")
 })
 
 socket.on('result', (results) => {
-    console.log(results)
     if(results.bool === true){
         Swal.fire({
             icon: 'info',
@@ -357,6 +357,7 @@ socket.on('result', (results) => {
 
 socket.on('start-vote', () => {
     var input = document.getElementById("exampleFormControlSelect1")
+    input.innerHTML = ""
     for (let i = 0 ; i < players_list.length ; i++){
         if(players_list[i] != duo1 && players_list[i] != duo2){
             var option = document.createElement("option")
