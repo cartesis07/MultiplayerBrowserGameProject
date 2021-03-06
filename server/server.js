@@ -7,25 +7,25 @@ const publicPath = path.join(__dirname, '/../public');
 const port = process.env.PORT || 3000;
 
 //list of all influence cards
-let cards = [1,2,4,6]
+let cards = [1,2,3,4]
 
 //list of all objectives
 let objectives = {
 
   //Area 1 objectives
-  0: {name: "Agamator", value: 6, power: "Make a player discard a card", cost: 0},
-  1: {name: "Kthera", value: 6, power: "Steal a card from someone else", cost: 0},
-  2: {name: "Zobi", value: 6, power: "Make two players draw one card each", cost: 0},
+  0: {name: "Agamator", value: 5, power: "Make a player discard a card", cost: 0},
+  1: {name: "Kthera", value: 5, power: "Steal a card from someone else", cost: 0},
+  2: {name: "Zobi", value: 5, power: "Make two players draw one card each", cost: 0},
   
   //Area 2 objectives
-  3: {name: "Brokhor", value: 10, power:"Choose one of the two next priests", cost: 2},
-  4: {name: "Amganon", value: 10, power:"Exchange this god against another on the table", cost: 1},
-  5: {name: "Sitifor", value: 10, power:"Secretly, look at the religious alignement of somebody", cost: 2},
+  3: {name: "Brokhor", value: 8, power:"Choose one of the two next priests", cost: 2},
+  4: {name: "Amganon", value: 8, power:"Exchange this god against another on the table", cost: 1},
+  5: {name: "Sitifor", value: 8, power:"Secretly, look at the religious alignement of somebody", cost: 2},
   
   //Area 3 objectives
-  6: {name: "Bulbur", value: 16, power:"Kill a daemon", cost: 3},
-  7: {name: "Stulo", value: 16, power:"Steal a daemon", cost: 3},
-  8: {name: "Dipis", value: 16, power:"Choose the next two priests", cost: 4},
+  6: {name: "Bulbur", value: 10, power:"Kill a daemon", cost: 3},
+  7: {name: "Stulo", value: 10, power:"Steal a daemon", cost: 3},
+  8: {name: "Dipis", value: 10, power:"Choose the next two priests", cost: 4},
 }
 
 //list of connected users
@@ -177,10 +177,7 @@ io.sockets.on('connection', function(socket) {
       io.sockets.to(currentRoomId).emit('players-list', tmp_users)
 
       const new_game = new GameManagement(tmp_users,tmp_ids,currentRoomId)
-      games_list.push({
-        key: currentRoomId,
-        value: new_game
-      })
+      games_list.push(currentRoomId)
     })
 
     socket.on("energy", (choice) => {
@@ -424,8 +421,6 @@ class GameManagement {
               }
           }
 
-          io.sockets.to(this.room).emit('vote-result', {max: max, index_max: index_max, equality: equality})
-
           this.votes_dictionary = []
           for (let i = 0; i < this.game_users_list.length; i++){
               this.votes_dictionary.push(0)
@@ -436,6 +431,44 @@ class GameManagement {
           }
           this.updateGods()
 
-          this.handleEra()
+          io.sockets.to(this.room).emit('vote-result', {max: max, index_max: index_max, equality: equality})
+
+          this.Power0()
+      }
+      Power0(){
+
+        this.Power1()
+      }
+      Power1(){
+
+        this.Power2()
+      }
+      Power2(){
+
+        this.Power3()
+      }
+      Power3(){
+
+        this.Power4()
+      }
+      Power4(){
+
+        this.Power5()
+      }
+      Power5(){
+
+        this.Power6()
+      }
+      Power6(){
+
+        this.Power7()
+      }
+      Power7(){
+
+        this.Power8()
+      }
+      Power8(){
+
+        this.handleEra()
       }
 }

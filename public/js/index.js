@@ -14,25 +14,25 @@ var duo1 = undefined
 var duo2 = undefined
 var current_god = undefined
 var current_area = 0
-var cards = [1,2,4,6]
+var cards = [1,2,3,4]
 
 //list of all objectives
 let objectives = {
 
     //Area 1 objectives
-    0: {name: "Agamator", value: 6, power: "Make a player discard a card", cost: 0},
-    1: {name: "Kthera", value: 6, power: "Steal a card from someone else", cost: 0},
-    2: {name: "Zobi", value: 6, power: "Make two players draw one card each", cost: 0},
+    0: {name: "Agamator", value: 5, power: "Make a player discard a card", cost: 0},
+    1: {name: "Kthera", value: 5, power: "Steal a card from someone else", cost: 0},
+    2: {name: "Zobi", value: 5, power: "Make another player draw 2 cards", cost: 0},
     
     //Area 2 objectives
-    3: {name: "Brokhor", value: 10, power:"Choose one of the two next priests", cost: 2},
-    4: {name: "Amganon", value: 10, power:"Exchange this god against another on the table", cost: 1},
-    5: {name: "Sitifor", value: 10, power:"Secretly, look at the religious alignement of somebody", cost: 2},
+    3: {name: "Brokhor", value: 8, power:"Choose one of the two next priests", cost: 2},
+    4: {name: "Amganon", value: 8, power:"Exchange this god against another on the table", cost: 1},
+    5: {name: "Sitifor", value: 8, power:"Secretly, look at the religious alignement of somebody", cost: 2},
     
     //Area 3 objectives
-    6: {name: "Bulbur", value: 16, power:"Kill a daemon", cost: 3},
-    7: {name: "Stulo", value: 16, power:"Steal a daemon", cost: 3},
-    8: {name: "Dipis", value: 16, power:"Choose the next two priests", cost: 4},
+    6: {name: "Bulbur", value: 10, power:"Kill a daemon", cost: 3},
+    7: {name: "Stulo", value: 10, power:"Steal a daemon", cost: 3},
+    8: {name: "Dipis", value: 10, power:"Choose the next two priests", cost: 4},
   }
 
 socket.on('room-id', function(room_id) {
@@ -135,11 +135,11 @@ function Hide(block){
 
 //administrator launch the game
 function LaunchGame(){
-    if(players_list.length < 2){
+    if(players_list.length < 3){
         Swal.fire({
             icon: 'error',
             title: 'Oops...',
-            text: 'You have to be at least 2 players in the room to launch this game !',
+            text: 'You have to be at least 3 players in the room to launch this game !',
           })
     }
     else{
@@ -207,7 +207,7 @@ function UpdateMyCards(list){
 } 
 
 function updateModal(player_number){
-    document.getElementById("exampleModalLabel").innerText = players_list[player_number] + " has " + cards_dictionary[player_number].length + " energy cards"
+    document.getElementById("exampleModalLabel").innerText = players_list[player_number] + " has " + cards_dictionary[player_number].length + " energy cards and " + gods_dictionary[player_number].length + " daemons"
 
     var parent = document.getElementById("all-gods")
     parent.innerHTML = ""
@@ -341,14 +341,14 @@ socket.on('god', (god) => {
 socket.on('result', (results) => {
     if(results.bool === true){
         Swal.fire({
-            icon: 'info',
+            icon: 'success',
             title: 'This deamon has been beaten',
             text: 'The duo sent ' + results.power + ' energy'
           })
     }
     else{
         Swal.fire({
-            icon: 'info',
+            icon: 'error',
             title: 'This deamon has not been beaten !',
             text: 'The duo sent ' + results.power + ' energy'
         })
@@ -377,14 +377,20 @@ socket.on('vote-result', (vote_results) => {
     Hide("objective-to-do")
     if(vote_results.equality === true){
         Swal.fire({
-            icon: 'info',
+            icon: 'error',
             title: 'Equality',
             text: 'This deamon has been destroyed'
           })
     }
     else{
+        var count = 0;
+        for(let i = 0; i < gods_dictionary.length; i++){
+            count += gods_dictionary[i].length
+        }
+        count *= 20
+        document.getElementById("progress").style="width: "+ count + "%"
         Swal.fire({
-            icon: 'info',
+            icon: 'success',
             title: 'Vote results',
             text: players_list[vote_results.index_max] + ' obtained ' + vote_results.max + ' votes and acquires ' + objectives[current_god].name
           })
