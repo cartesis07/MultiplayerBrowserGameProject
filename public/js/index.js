@@ -14,6 +14,7 @@ var duo1 = undefined
 var duo2 = undefined
 var current_god = undefined
 var current_area = 0
+var cards = [1,2,4,6]
 
 //list of all objectives
 let objectives = {
@@ -34,8 +35,6 @@ let objectives = {
     8: {name: "Dipis", value: 16, power:"Choose the next two priests", cost: 4},
   }
 
-role_hidden = false;
-
 socket.on('room-id', function(room_id) {
     current_room = room_id;
 
@@ -48,7 +47,6 @@ socket.on('room-id', function(room_id) {
 
 socket.on('players-list', function(users_list){
     players_list = users_list
-    console.log(players_list)
     UpdateRoomListDisplay();
 });
 
@@ -149,16 +147,19 @@ function LaunchGame(){
     }
 }
 
-function HideAndShowRole(){
-    if(role_hidden === false){
-        Hide("my-role")
-        document.getElementById("role-button").innerHTML = "Show Role"
+function ShowRole(){
+    if (my_role == "Traitor"){
+        Swal.fire({
+            icon: 'info',
+            title: 'You are a traitor !',
+        })
     }
-    else{
-        Display("my-role")
-        document.getElementById("role-button").innerHTML = "Hide Role"
+    else {
+        Swal.fire({
+            icon: 'info',
+            title: 'You are a crewmate !',
+        })
     }
-    role_hidden = !role_hidden
 }
 
 function NumberInList(){
@@ -287,8 +288,6 @@ socket.on('roles', (roles) => {
         //     title: 'You are a crewmate !',
         // })
     }
-    document.getElementById("my-role").innerHTML = my_role;
-    Display("my-role")
 })
 
 socket.on('cards', (cards_dict) => {
@@ -304,7 +303,7 @@ socket.on('gods-dict', (gods_dict) => {
 
 socket.on('current-area',area => {
     current_area = area
-    document.getElementById("area").innerHTML = "<h4>Era"+ area + "</h4>"
+    document.getElementById("area").innerHTML = "<h4>Era "+ area + "</h4>"
 })
 
 socket.on('duo',(random_players) => {
@@ -317,7 +316,6 @@ socket.on('duo',(random_players) => {
 })
 
 socket.on('god', (god) => {
-    console.log(god)
     current_god = god
     var index = current_god
     var objective = document.getElementById("objective-to-do")
