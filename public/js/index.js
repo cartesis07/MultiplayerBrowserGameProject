@@ -24,15 +24,15 @@ let objectives = {
     2: {name: "Zobi", value: 6, power: "Make two players draw one card each", cost: 0},
     
     //Area 2 objectives
-    3: {name: "1", value: 10, power:"Choose one of the two next priests", cost: 2},
-    4: {name: "1", value: 10, power:"Exchange this god against another on the table", cost: 1},
-    5: {name: "1", value: 10, power:"Secretly, look at the religious alignement of somebody", cost: 2},
+    3: {name: "Brokhor", value: 10, power:"Choose one of the two next priests", cost: 2},
+    4: {name: "Amganon", value: 10, power:"Exchange this god against another on the table", cost: 1},
+    5: {name: "Sitifor", value: 10, power:"Secretly, look at the religious alignement of somebody", cost: 2},
     
     //Area 3 objectives
-    6: {name: "1", value: 16, power:"Kill a daemon", cost: 3},
-    7: {name: "1", value: 16, power:"Steal a daemon", cost: 3},
-    8: {name: "1", value: 16, power:"Choose the next two priests", cost: 4},
-}
+    6: {name: "Bulbur", value: 16, power:"Kill a daemon", cost: 3},
+    7: {name: "Stulo", value: 16, power:"Steal a daemon", cost: 3},
+    8: {name: "Dipis", value: 16, power:"Choose the next two priests", cost: 4},
+  }
 
 role_hidden = false;
 
@@ -48,6 +48,7 @@ socket.on('room-id', function(room_id) {
 
 socket.on('players-list', function(users_list){
     players_list = users_list
+    console.log(players_list)
     UpdateRoomListDisplay();
 });
 
@@ -162,7 +163,7 @@ function HideAndShowRole(){
 
 function NumberInList(){
     for (let i = 0 ; i < players_list.length ; i++){
-        if (players_list[i] === my_username){
+        if (players_list[i] == my_username){
             return i;
         }
     }
@@ -221,7 +222,7 @@ function updateModal(player_number){
     
         var div_container = document.createElement("div")
         div_container.setAttribute("class","container")
-        div_container.innerHTML = "<h5><b>"+ objectives[list[i]].name + "</br>" + "Power " + objectives[list[i]].value +"<b/><h5/><p> " + objectives[list[i]].power + " </p>"
+        div_container.innerHTML = "<h5><b>"+ objectives[list[i]].name + "</br>" + "Power : " + objectives[list[i]].value +"</br>Cost : " + objectives[list[i]].cost + "<b/><h5/><p> " + objectives[list[i]].power + " </p>"
         card.appendChild(div_container)
     
         parent.appendChild(card)
@@ -301,6 +302,11 @@ socket.on('gods-dict', (gods_dict) => {
     gods_dictionary = gods_dict
 })
 
+socket.on('current-area',area => {
+    current_area = area
+    document.getElementById("area").innerHTML = "<h4>Era"+ area + "</h4>"
+})
+
 socket.on('duo',(random_players) => {
     duo1 = players_list[random_players.rnd1]
     duo2 = players_list[random_players.rnd2]
@@ -311,8 +317,9 @@ socket.on('duo',(random_players) => {
 })
 
 socket.on('god', (god) => {
+    console.log(god)
     current_god = god
-    var index = current_god + current_area*3
+    var index = current_god
     var objective = document.getElementById("objective-to-do")
     objective.innerHTML = ""
 
@@ -326,7 +333,7 @@ socket.on('god', (god) => {
 
     var div_container = document.createElement("div")
     div_container.setAttribute("class","container")
-    div_container.innerHTML = "<h5><b>"+ objectives[index].name + "</br>" + "Power " + objectives[index].value +"<b/><h5/><p> " + objectives[index].power + " </p>"
+    div_container.innerHTML = "<h5><b>"+ objectives[index].name + "</br>" + "Power : " + objectives[index].value +"</br>Cost : " + objectives[index].cost + "<b/><h5/><p> " + objectives[index].power + " </p>"
     card.appendChild(div_container)
 
     objective.appendChild(card)

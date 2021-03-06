@@ -18,14 +18,14 @@ let objectives = {
   2: {name: "Zobi", value: 6, power: "Make two players draw one card each", cost: 0},
   
   //Area 2 objectives
-  3: {name: "1", value: 10, power:"Choose one of the two next priests", cost: 2},
-  4: {name: "1", value: 10, power:"Exchange this god against another on the table", cost: 1},
-  5: {name: "1", value: 10, power:"Secretly, look at the religious alignement of somebody", cost: 2},
+  3: {name: "Brokhor", value: 10, power:"Choose one of the two next priests", cost: 2},
+  4: {name: "Amganon", value: 10, power:"Exchange this god against another on the table", cost: 1},
+  5: {name: "Sitifor", value: 10, power:"Secretly, look at the religious alignement of somebody", cost: 2},
   
   //Area 3 objectives
-  6: {name: "1", value: 16, power:"Kill a daemon", cost: 3},
-  7: {name: "1", value: 16, power:"Steal a daemon", cost: 3},
-  8: {name: "1", value: 16, power:"Choose the next two priests", cost: 4},
+  6: {name: "Bulbur", value: 16, power:"Kill a daemon", cost: 3},
+  7: {name: "Stulo", value: 16, power:"Steal a daemon", cost: 3},
+  8: {name: "Dipis", value: 16, power:"Choose the next two priests", cost: 4},
 }
 
 //list of connected users
@@ -174,6 +174,8 @@ io.sockets.on('connection', function(socket) {
         });
       }
 
+      io.sockets.to(currentRoomId).emit('players-list', tmp_users)
+
       const new_game = new GameManagement(tmp_users,tmp_ids,currentRoomId)
       games_list.push({
         key: currentRoomId,
@@ -218,23 +220,22 @@ class GameManagement {
         this.random_player1 = undefined
         this.random_player2 = undefined
         this.era = 1
+        this.epoch = 0
         this.era1 = [0,1,2]
-        this.era2 = [0,1,2]
-        this.era3 = [0,1,2]
+        this.era2 = [3,4,5]
+        this.era3 = [6,7,8]
         this.current_god = undefined
         this.success = undefined
-        this.current_area = 0
         //this.timer = setTimeout(this.stopNegotation.bind(this), 30000)
         this.giveRoles()
         this.distributeCards()
 
-        this.randomDuo()
-
-        //this.lastVote()
+        this.handleEra()
      }
 
      giveRoles(){
-      this.roles_list = shuffle(this.game_users_list)
+      this.roles_list = [...this.game_users_list]
+      shuffle(this.roles_list)
       io.sockets.to(this.room).emit('roles',this.roles_list)
      }
 
@@ -268,6 +269,16 @@ class GameManagement {
         //this.vote()
         //this.resolvePowers()
 
+     handleEra(){
+        this.epoch++
+        if(this.epoch == 4){
+          this.era++
+          this.epoch = 1
+        }
+        io.sockets.to(this.room).emit('current-area',this.era)
+        this.randomDuo()
+     }
+
      randomDuo(){
        this.random_player1 = Math.floor(Math.random() * this.game_users_list.length);
        this.random_player2 = this.random_player1
@@ -281,17 +292,22 @@ class GameManagement {
       randomGod(){
           switch(this.era){
             case 1:
-              this.current_god = this.era1[Math.floor(Math.random() * this.era1.length)];
+              var rnd_index = Math.floor(Math.random() * this.era1.length)
+              this.current_god = this.era1[rnd_index];
               io.sockets.to(this.room).emit('god', this.current_god)
-              this.era1.splice(this.current_god,1)
+              this.era1.splice(rnd_index,1)
               break
             case 2:
-              this.current_god = this.era2[Math.floor(Math.random() * this.era2.length)];
+              var rnd_index = Math.floor(Math.random() * this.era2.length)
+              this.current_god = this.era2[rnd_index];
               io.sockets.to(this.room).emit('god', this.current_god)
+              this.era2.splice(rnd_index,1)
               break
             case 3:
-              this.current_god = this.era3[Math.floor(Math.random() * this.era3.length)];
+              var rnd_index = Math.floor(Math.random() * this.era3.length)
+              this.current_god = this.era3[rnd_index];
               io.sockets.to(this.room).emit('god', this.current_god)
+              this.era3.splice(rnd_index,1)
               break
           }
           this.resolveEnergy();
@@ -349,7 +365,7 @@ class GameManagement {
        for(let i = 0; i < this.cards_selected.length; i++){
           result += this.cards_selected[i]
        }
-       if(result >= objectives[this.current_god + this.current_area*3].value){
+       if(result >= objectives[this.current_god].value){
           this.success = true
        }
        else{
@@ -361,7 +377,7 @@ class GameManagement {
          this.vote()
        }
        else{
-         //this.resolvePowers()
+         this.handleEra()
        }
       }
 
@@ -411,15 +427,15 @@ class GameManagement {
           io.sockets.to(this.room).emit('vote-result', {max: max, index_max: index_max, equality: equality})
 
           this.votes_dictionary = []
-          for (let i = 0; i < this.game_users_list; i++){
+          for (let i = 0; i < this.game_users_list.length; i++){
               this.votes_dictionary.push(0)
           }
 
           if(equality == false){
-            this.gods_dictionary[index_max].push(this.current_god + this.current_area*3)
+            this.gods_dictionary[index_max].push(this.current_god)
           }
           this.updateGods()
 
-          this.randomDuo()
+          this.handleEra()
       }
 }
