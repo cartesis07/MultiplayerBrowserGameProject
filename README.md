@@ -1,3 +1,3 @@
 # MultiplayerBrowserGameProject
 
-Negotiation and auction game version of my SocketIO multiplayer game !
+Social deduction cards game made with SocketIO, NodeJS and Express.
