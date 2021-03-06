@@ -318,18 +318,24 @@ class GameManagement {
         this.energy_choice[0] = this.energy_choice[1]
         this.energy_choice[1] = tmp
       }
-
-       for(let j = 0 ; j < 2; j++){
-        for (let i = 0; i < this.energy_choice[j].hand_choice.length ; i++){
-          if(this.energy_choice[j].hand_choice[i] == 1){
-             this.cards_selected.push(this.card_dictionary[j][i])
-             delete this.card_dictionary[j][i]
-          }
+      for (let i = 0; i < this.energy_choice[0].hand_choice.length ; i++){
+        if(this.energy_choice[0].hand_choice[i] == 1){
+           this.cards_selected.push(this.card_dictionary[this.random_player1][i])
+           delete this.card_dictionary[this.random_player1][i]
         }
-        this.card_dictionary[j] = this.card_dictionary[j].filter(function (el) {
-          return el != null;
-        });
-       }
+      }
+      this.card_dictionary[this.random_player1] = this.card_dictionary[this.random_player1].filter(function (el) {
+        return el != null;
+      });
+      for (let i = 0; i < this.energy_choice[1].hand_choice.length ; i++){
+        if(this.energy_choice[1].hand_choice[i] == 1){
+           this.cards_selected.push(this.card_dictionary[this.random_player2][i])
+           delete this.card_dictionary[this.random_player2][i]
+        }
+      }
+      this.card_dictionary[this.random_player2] = this.card_dictionary[this.random_player2].filter(function (el) {
+        return el != null;
+      });
 
        this.energy_choice = []
 
@@ -403,7 +409,7 @@ class GameManagement {
           io.sockets.to(this.room).emit('vote-result', {max: max, index_max: index_max, equality: equality})
 
           if(equality == false){
-            this.gods_dictionary[index_max].push(this.randomGod)
+            this.gods_dictionary[index_max].push(this.current_god)
           }
           this.updateGods()
 

@@ -9,7 +9,6 @@ var my_role = undefined;
 var cards_dictionary = undefined;
 var gods_dictionary = undefined;
 var my_hand = undefined;
-var my_gods = undefined;
 var hand_select = undefined;
 var duo1 = undefined
 var duo2 = undefined
@@ -206,6 +205,28 @@ function UpdateMyCards(list){
 
 function updateModal(player_number){
     document.getElementById("exampleModalLabel").innerText = players_list[player_number] + " has " + cards_dictionary[player_number].length + " energy cards"
+
+    var parent = document.getElementById("all-gods")
+    parent.innerHTML = ""
+    var list = gods_dictionary[player_number]
+    console.log(gods_dictionary)
+    console.log(list)
+    for(let i = 0 ; i < list.length ; i++){
+        var card = document.createElement("div")
+        card.setAttribute("class","card")
+    
+        var image = document.createElement("img")
+        image.src="./ressources/" + list[i] + ".jpeg"
+        image.style = "width:100%"
+        card.appendChild(image)
+    
+        var div_container = document.createElement("div")
+        div_container.setAttribute("class","container")
+        div_container.innerHTML = "<h5><b>"+ objectives[list[i]].name + "</br>" + "Power " + objectives[list[i]].value +"<b/><h5/><p> " + objectives[list[i]].power + " </p>"
+        card.appendChild(div_container)
+    
+        parent.appendChild(card)
+    }
 }
 
 function SendEnergy(){
@@ -279,7 +300,6 @@ socket.on('cards', (cards_dict) => {
 
 socket.on('gods-dict', (gods_dict) => {
     gods_dictionary = gods_dict
-    my_gods = gods_dict[number_in_list]
 })
 
 socket.on('duo',(random_players) => {
@@ -317,7 +337,7 @@ socket.on('result', (results) => {
     if(results.bool === true){
         Swal.fire({
             icon: 'info',
-            title: 'This deamon has been beaten !',
+            title: 'This deamon has been beaten',
             text: 'The duo sent ' + results.power + ' energy'
           })
     }
@@ -353,13 +373,14 @@ socket.on('vote-result', (vote_results) => {
         Swal.fire({
             icon: 'info',
             title: 'Equality',
+            text: 'This deamon has been destroyed'
           })
     }
     else{
         Swal.fire({
             icon: 'info',
-            title: players_list[vote_results.index_max],
-            text: 'This player obtained ' + vote_results.max + ' votes and acquires ' + objectives[current_god].name
+            title: 'Vote results',
+            text: players_list[vote_results.index_max] + ' obtained ' + vote_results.max + ' votes and acquires ' + objectives[current_god].name
           })
     }
 })
