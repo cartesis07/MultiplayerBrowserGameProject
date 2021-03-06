@@ -186,7 +186,6 @@ io.sockets.on('connection', function(socket) {
     })
 
     socket.on("vote", (vote) => {
-      console.log(votes_room)
       votes_room.push(vote)
     })
 
@@ -210,8 +209,10 @@ class GameManagement {
         this.game_users_ids = game_users_ids
         this.card_dictionary = []
         this.gods_dictionary = []
+        this.votes_dictionary = []
         this.room = room
         this.energy_choice = []
+        this.vote_choice = []
         this.roles_list = []
         this.cards_selected = []
         this.random_player1 = undefined
@@ -244,13 +245,20 @@ class GameManagement {
            cards_hand.push(random)
          }
          this.card_dictionary.push(cards_hand)
+         this.gods_dictionary.push([])
+         this.votes_dictionary.push(0)
        }
-       io.sockets.to(this.room).emit('cards',this.card_dictionary)
+       this.updateCards()
+       this.updateGods()
      }
 
      updateCards(){
       io.sockets.to(this.room).emit('cards',this.card_dictionary)
      }
+
+     updateGods(){
+      io.sockets.to(this.room).emit('gods-dict',this.gods_dictionary)
+    }
 
       //between a lot of these steps, we apply an update of the cards distribution
         //this.randomDuo()
@@ -351,5 +359,54 @@ class GameManagement {
 
       vote(){
           io.sockets.to(this.room).emit('start-vote')
+          this.resolveVote()
+      }
+
+      resolveVote(){
+        for (let i = 0; i < votes_room.length; i++){
+            if(votes_room[i].room == this.room){
+              this.vote_choice.push(votes_room[i])
+              votes_room.splice(i,1)
+            }
+        }
+        if(this.vote_choice == undefined || this.vote_choice.length < this.number_of_users){
+          setTimeout(() => this.resolveVote(), 1000)
+        }
+        else{
+          this.calculateVote()
+        }
+      }
+
+      calculateVote(){
+          for (let i = 0; i < this.vote_choice.length; i++){
+              this.votes_dictionary[this.game_users_list.indexOf(this.vote_choice[i].vote)]++ 
+          }
+          this.vote_choice = []
+          this.sendVoteResult()
+      }
+
+      sendVoteResult(){
+          var max = 0
+          var index_max = 0
+          var equality = false
+          for (let i = 0; i < this.votes_dictionary.length; i++){
+              if(this.votes_dictionary[i] > max){
+                max = this.votes_dictionary[i]
+                index_max = i
+                equality = false
+              }
+              else if(this.votes_dictionary[i] == max){
+                equality = true
+              }
+          }
+
+          io.sockets.to(this.room).emit('vote-result', {max: max, index_max: index_max, equality: equality})
+
+          if(equality == false){
+            this.gods_dictionary[index_max].push(this.randomGod)
+          }
+          this.updateGods()
+
+          this.votes_dictionary = []
       }
 }

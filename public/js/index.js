@@ -2,14 +2,18 @@ var socket = io.connect();
 var current_room = "";
 var my_username = "";
 var players_list = [];
+var number_in_list = undefined;
 var roles_list = [];
 var administrator = false;
 var my_role = undefined;
 var cards_dictionary = undefined;
+var gods_dictionary = undefined;
 var my_hand = undefined;
+var my_gods = undefined;
 var hand_select = undefined;
 var duo1 = undefined
 var duo2 = undefined
+var current_god = undefined
 
 //list of all objectives
 let objectives = {
@@ -205,7 +209,7 @@ function updateModal(player_number){
 }
 
 function SendEnergy(){
-    socket.emit('energy',{room: current_room, player: NumberInList(), hand_choice: hand_select})
+    socket.emit('energy',{room: current_room, player: number_in_list, hand_choice: hand_select})
     Hide("send-energy")
     // Swal.fire({
     //     icon: 'success',
@@ -268,8 +272,14 @@ socket.on('roles', (roles) => {
 
 socket.on('cards', (cards_dict) => {
     cards_dictionary = cards_dict
-    my_hand = cards_dict[NumberInList()]
-    UpdateMyCards(cards_dict[NumberInList()])
+    number_in_list = NumberInList()
+    my_hand = cards_dict[number_in_list]
+    UpdateMyCards(cards_dict[number_in_list])
+})
+
+socket.on('gods-dict', (gods_dict) => {
+    gods_dictionary = gods_dict
+    my_gods = gods_dict[number_in_list]
 })
 
 socket.on('duo',(random_players) => {
@@ -282,6 +292,7 @@ socket.on('duo',(random_players) => {
 })
 
 socket.on('god', (god) => {
+    current_god = god
     var objective = document.getElementById("objective-to-do")
     objective.innerHTML = ""
 
@@ -334,4 +345,21 @@ socket.on('start-vote', () => {
         }
     }
     Display("vote")
+})
+
+socket.on('vote-result', (vote_results) => {
+    Hide("objective-to-do")
+    if(vote_results.equality === true){
+        Swal.fire({
+            icon: 'info',
+            title: 'Equality',
+          })
+    }
+    else{
+        Swal.fire({
+            icon: 'info',
+            title: players_list[vote_results.index_max],
+            text: 'This player obtained ' + vote_results.max + ' votes and acquires ' + objectives[current_god].name
+          })
+    }
 })
