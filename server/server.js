@@ -28,6 +28,9 @@ let objectives = {
   8: {name: "Dipis", value: 10, power:"Choose the next two priests", cost: 4},
 }
 
+//list of powers
+let powers = []
+
 //list of connected users
 let users = {};
 
@@ -188,6 +191,10 @@ io.sockets.on('connection', function(socket) {
       votes_room.push(vote)
     })
 
+    socket.on("power", (power) => {
+      powers.push(power)
+    })
+
 });
 
 function shuffle(array) {
@@ -214,6 +221,7 @@ class GameManagement {
         this.vote_choice = []
         this.roles_list = []
         this.cards_selected = []
+        this.gods_selected = []
         this.random_player1 = undefined
         this.random_player2 = undefined
         this.era = 1
@@ -223,6 +231,16 @@ class GameManagement {
         this.era3 = [6,7,8]
         this.current_god = undefined
         this.success = undefined
+        this.power0 = undefined
+        this.power1 = undefined
+        this.power2 = undefined
+        this.power3 = undefined
+        this.power4 = undefined
+        this.power5 = undefined
+        this.power6 = undefined
+        this.power7 = undefined
+        this.power8 = undefined
+
         //this.timer = setTimeout(this.stopNegotation.bind(this), 30000)
         this.giveRoles()
         this.distributeCards()
@@ -428,6 +446,7 @@ class GameManagement {
 
           if(equality == false){
             this.gods_dictionary[index_max].push(this.current_god)
+            this.gods_selected.push(this.current_god)
           }
           this.updateGods()
 
@@ -436,9 +455,45 @@ class GameManagement {
           this.Power0()
       }
       Power0(){
-
-        this.Power1()
+        if(this.gods_selected.includes(0)){
+            for (let i = 0; i < this.gods_dictionary.length ; i++){
+               if(this.gods_dictionary[i].includes(0)){
+                io.sockets.to(this.room).emit('power0',i)
+               }
+            }
+            this.resolvePower0()
+        }
+        else{
+          this.Power1()
+        }
       }
+
+      resolvePower0(){
+        for (let i = 0; i < powers.length; i++){
+          if(powers[i].room == this.room && powers[i].grade == 0){
+            this.power0 = powers[i].power
+            this.applyPower0()
+          }
+          else{
+            setTimeout(() => this.resolvePower0(), 1000)
+          }
+        }
+        if(powers.length == 0){
+          setTimeout(() => this.resolvePower0(), 1000)
+        }
+      }
+
+      applyPower0(){
+        if(this.card_dictionary[this.game_users_list.indexOf(this.power0)].length != 0){
+          this.card_dictionary[this.game_users_list.indexOf(this.power0)].splice(Math.floor(Math.random() * this.card_dictionary[this.game_users_list.indexOf(this.power0)].length),1)
+          this.updateCards()
+          this.Power1()
+        }
+        else{
+          this.Power0()
+        }
+      }
+
       Power1(){
 
         this.Power2()

@@ -196,7 +196,7 @@ function UpdateMyCards(list){
         card.setAttribute("onClick","SelectCard(" + i + ")")
         card.id = "influence-card-" + i
         var logo = document.createElement("i")
-        logo.className="fas fa-burn fa-4x"
+        logo.className="fas fa-burn fa-2x"
         card.appendChild(logo)
         var div_container = document.createElement("div")
         div_container.className="container"
@@ -247,6 +247,11 @@ function Vote(){
     //     title: 'Vote sent',
     //})
     Hide("vote")
+}
+
+function Power0(){
+    socket.emit('power', {room: current_room, grade: 0, power: document.getElementById("form-power0").value})
+    Hide('power0')
 }
 
 //game launched by the administrator
@@ -395,4 +400,18 @@ socket.on('vote-result', (vote_results) => {
             text: players_list[vote_results.index_max] + ' obtained ' + vote_results.max + ' votes and acquires ' + objectives[current_god].name
           })
     }
+})
+
+socket.on('power0', (player_number) => {
+        if(number_in_list == player_number){
+            var form = document.getElementById("form-power0")
+            for(let i = 0; i < players_list.length ; i++){
+                if(players_list[i] != my_username){
+                    var option = document.createElement("option")
+                    option.innerText = players_list[i]
+                    form.appendChild(option)
+                }
+            }
+            Display('power0')
+        }
 })
