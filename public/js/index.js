@@ -22,10 +22,10 @@ let objectives = {
     //Area 1 objectives
     0: {name: "Agamator", value: 5, power: "Make a player discard a card", cost: 0},
     1: {name: "Kthera", value: 5, power: "Steal a card from someone else", cost: 0},
-    2: {name: "Zobi", value: 5, power: "Make another player draw 2 cards", cost: 0},
+    2: {name: "Zobi", value: 5, power: "Make a player draw 2 cards", cost: 0},
     
     //Area 2 objectives
-    3: {name: "Brokhor", value: 8, power:"Choose one of the two next priests", cost: 2},
+    3: {name: "Brokhor", value: 8, power:"Activate another god's power", cost: 2},
     4: {name: "Amganon", value: 8, power:"Exchange this god against another on the table", cost: 1},
     5: {name: "Sitifor", value: 8, power:"Secretly, look at the religious alignement of somebody", cost: 2},
     
@@ -251,7 +251,20 @@ function Vote(){
 
 function Power0(){
     socket.emit('power', {room: current_room, grade: 0, power: document.getElementById("form-power0").value})
+    document.getElementById("form-power0").innerHTML = ""
     Hide('power0')
+}
+
+function Power1(){
+    socket.emit('power', {room: current_room, grade: 1, power: document.getElementById("form-power1").value})
+    document.getElementById("form-power1").innerHTML = ""
+    Hide('power1')
+}
+
+function Power2(){
+    socket.emit('power', {room: current_room, grade: 2, power: document.getElementById("form-power2").value})
+    document.getElementById("form-power2").innerHTML = ""
+    Hide('power2')
 }
 
 //game launched by the administrator
@@ -414,4 +427,32 @@ socket.on('power0', (player_number) => {
             }
             Display('power0')
         }
+})
+
+socket.on('power1', (player_number) => {
+    if(number_in_list == player_number){
+        var form = document.getElementById("form-power1")
+        for (let i = 0 ; i < players_list.length ; i++){
+            if(players_list[i] != my_username){
+                var option = document.createElement("option")
+                option.innerText = players_list[i]
+                form.appendChild(option)
+            }
+        }
+        Display('power1')
+    }
+})
+
+socket.on('power2', (player_number) => {
+    if(number_in_list == player_number){
+        var form = document.getElementById("form-power2")
+        for (let i = 0 ; i < players_list.length ; i++){
+            if(players_list[i] != my_username){
+                var option = document.createElement("option")
+                option.innerText = players_list[i]
+                form.appendChild(option)
+            }
+        }
+        Display('power2')
+    }
 })
