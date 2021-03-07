@@ -267,6 +267,44 @@ function Power2(){
     Hide('power2')
 }
 
+function Power5(){
+    var card_count = 0
+    for (let i = 0; i < hand_select.length; i++){
+        if(hand_select[i] == 1){
+            card_count++
+        }
+    }
+    if(card_count == objectives[5].cost){
+        socket.emit('power', {room: current_room, grade: 5, power: document.getElementById("form-power5").value, cost_card: hand_select, player: number_in_list})
+        var index_looked = roles_list.indexOf(document.getElementById("form-power5").value)
+        if(index_looked == 0){
+            var role = "Traitor"
+        }
+        else{
+            var role = "Crewmate"
+        }
+        Swal.fire({
+            icon: 'info',
+            title: role,
+            text: document.getElementById("form-power5").value + " is a " + role
+        })
+        document.getElementById("form-power5").innerHTML = ""
+        Hide('power5')
+    }
+    else{
+        Swal.fire({
+        icon: 'error',
+        title: 'Please, select 2 cards',
+        })
+    }
+}
+
+function IgnorePower5(){
+    socket.emit('power', {room: current_room, grade: 5, power: "ignore"})
+    document.getElementById("form-power5").innerHTML = ""
+    Hide('power5')
+}
+
 //game launched by the administrator
 socket.on('game-launched', () => {
     Hide("lobby")
@@ -290,8 +328,7 @@ socket.on('game-launched', () => {
 
 socket.on('roles', (roles) => {
     roles_list = roles
-    const usernameCompare = (element) => element == my_username;
-    var index = roles_list.findIndex(usernameCompare)
+    var index = roles_list.indexOf(my_username)
     if (index == 0){
         my_role = "Traitor"
         // Swal.fire({
@@ -454,5 +491,19 @@ socket.on('power2', (player_number) => {
             }
         }
         Display('power2')
+    }
+})
+
+socket.on('power5', (player_number) => {
+    if(number_in_list == player_number){
+        var form = document.getElementById("form-power5")
+        for (let i = 0 ; i < players_list.length ; i++){
+            if(players_list[i] != my_username){
+                var option = document.createElement("option")
+                option.innerText = players_list[i]
+                form.appendChild(option)
+            }
+        }
+        Display('power5')
     }
 })

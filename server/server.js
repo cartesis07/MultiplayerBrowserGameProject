@@ -13,19 +13,19 @@ let cards = [1,2,3,4]
 let objectives = {
 
   //Area 1 objectives
-  0: {name: "Agamator", value: 5, power: "Make a player discard a card", cost: 0},
-  1: {name: "Kthera", value: 5, power: "Steal a card from someone else", cost: 0},
-  2: {name: "Zobi", value: 5, power: "Make a player draw 2 cards", cost: 0},
+  0: {name: "Agamator", value: 5, power: "Make a player discard a card", cost: 0}, //done
+  1: {name: "Kthera", value: 5, power: "Steal a card from someone else", cost: 0}, //done
+  2: {name: "Zobi", value: 5, power: "Make a player draw 2 cards", cost: 0}, //done
   
   //Area 2 objectives
-  3: {name: "Brokhor", value: 8, power:"Activate another god's power", cost: 2},
-  4: {name: "Amganon", value: 8, power:"Exchange this god against another on the table", cost: 1},
-  5: {name: "Sitifor", value: 8, power:"Secretly, look at the religious alignement of somebody", cost: 2},
+  3: {name: "Brokhor", value: 7, power:"Activate another god's power", cost: 1},
+  4: {name: "Amganon", value: 7, power:"Exchange this god against another on the table", cost: 1},
+  5: {name: "Sitifor", value: 7, power:"Secretly, look at the religious alignement of somebody", cost: 2}, //done
   
   //Area 3 objectives
-  6: {name: "Bulbur", value: 10, power:"Kill a daemon", cost: 3},
-  7: {name: "Stulo", value: 10, power:"Steal a daemon", cost: 3},
-  8: {name: "Dipis", value: 10, power:"Choose the next two priests", cost: 4},
+  6: {name: "Bulbur", value: 9, power:"Kill a daemon", cost: 3},
+  7: {name: "Stulo", value: 9, power:"Steal a daemon", cost: 3},
+  8: {name: "Dipis", value: 9, power:"Choose the next two priests", cost: 3},
 }
 
 //list of powers
@@ -344,31 +344,25 @@ class GameManagement {
      }
 
     calculateEnergy(){
-      //invert things if they didn't send in the correct order
-      if(this.random_player1 > this.random_player2){
-        var tmp = this.energy_choice[0]
-        this.energy_choice[0] = this.energy_choice[1]
-        this.energy_choice[1] = tmp
-      }
       for (let i = 0; i < this.energy_choice[0].hand_choice.length ; i++){
         if(this.energy_choice[0].hand_choice[i] == 1){
-           this.cards_selected.push(this.card_dictionary[this.random_player1][i])
-           delete this.card_dictionary[this.random_player1][i]
+           this.cards_selected.push(this.card_dictionary[this.energy_choice[0].player][i])
+           delete this.card_dictionary[this.energy_choice[0].player][i]
         }
       }
       if(this.energy_choice[0].hand_choice.length != 0){
-        this.card_dictionary[this.random_player1] = this.card_dictionary[this.random_player1].filter(function (el) {
+        this.card_dictionary[this.energy_choice[0].player] = this.card_dictionary[this.energy_choice[0].player].filter(function (el) {
           return el != null;
         });
       }
       for (let i = 0; i < this.energy_choice[1].hand_choice.length ; i++){
         if(this.energy_choice[1].hand_choice[i] == 1){
-           this.cards_selected.push(this.card_dictionary[this.random_player2][i])
-           delete this.card_dictionary[this.random_player2][i]
+           this.cards_selected.push(this.card_dictionary[this.energy_choice[1].player][i])
+           delete this.card_dictionary[this.energy_choice[1].player][i]
         }
       }
       if(this.energy_choice[1].hand_choice.length != 0){
-        this.card_dictionary[this.random_player2] = this.card_dictionary[this.random_player2].filter(function (el) {
+        this.card_dictionary[this.energy_choice[1].player] = this.card_dictionary[this.energy_choice[1].player].filter(function (el) {
           return el != null;
         });
       }
@@ -596,9 +590,53 @@ class GameManagement {
         this.Power5()
       }
       Power5(){
-
-        this.Power6()
+        if(this.gods_selected.includes(5)){
+          for(let i = 0; i < this.gods_dictionary.length ; i++){
+            if(this.gods_dictionary[i].includes(5)){
+              io.sockets.to(this.room).emit('power5',i)
+            }
+          }
+          this.resolvePower5()
+        }
+        else{
+          this.Power6()
+        }
       }
+
+      resolvePower5(){
+        for(let i = 0; i < powers.length ; i++){
+          if(powers[i].room == this.room && powers[i].grade == 5){
+            this.power5 = powers[i]
+            powers.splice(i,1)
+            this.applyPower5()
+          }
+          else{
+            setTimeout(() => this.resolvePower5(), 1000)
+          }
+        }
+        if(powers.length == 0){
+          setTimeout(() => this.resolvePower5(), 1000)
+        }
+      }
+
+      applyPower5(){
+        if(this.power5.power == "ignore"){
+          this.Power6()
+        }
+        else{
+            for(let i = 0 ; i < this.power5.cost_card.length ; i++){
+              if(this.power5.cost_card[i] == 1){
+                  delete this.card_dictionary[this.power5.player][i]
+              }
+            }
+            this.card_dictionary[this.power5.player] = this.card_dictionary[this.power5.player].filter(function (el) {
+              return el != null;
+            });
+            this.updateCards()
+            this.Power6()
+        }
+      }
+
       Power6(){
 
         this.Power7()
