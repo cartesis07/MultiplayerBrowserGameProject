@@ -9,23 +9,28 @@ const port = process.env.PORT || 3000;
 //list of all influence cards
 let cards = [1,2,3,4]
 
+//colors : 0 = red and 1 = yellow
+
 //list of all objectives
 let objectives = {
   
   //Area 1 objectives
-  0: {name: "Agamator", value: 2, power: "Make a player discard a card", cost: 0}, //done
-  1: {name: "Kthera", value: 5, power: "Steal a card from someone else", cost: 0}, //done
-  2: {name: "Zobi", value: 5, power: "Make a player draw 2 cards", cost: 0}, //done
+  0: {name: "Agamator", value: 5, power: "Make a player discard a card", cost: 0, color: 0}, //done
+  1: {name: "Kthera", value: 5, power: "Steal a card from someone else", cost: 0, color: 1}, //done
+  2: {name: "Zobi", value: 5, power: "Make a player draw 2 cards", cost: 0, color: 1}, //done
   
   //Area 2 objectives
-  3: {name: "Brokhor", value: 6, power:"Spawn mini-deamon", cost: 2},
-  4: {name: "Amganon", value: 6, power:"Exchange two hands", cost: 2}, //done
-  5: {name: "Sitifor", value: 6, power:"Secretly, look at the religious alignement of somebody", cost: 2}, //done
+  3: {name: "Brokhor", value: 5, power:"Change a deamon's family", cost: 2, color: 0},
+  4: {name: "Amganon", value: 5, power:"Exchange two hands", cost: 2, color: 1}, //done
+  5: {name: "Sitifor", value: 5, power:"Secretly, look at the religious alignement of somebody", cost: 2, color: 1}, //done
   
   //Area 3 objectives
-  6: {name: "Bulbur", value: 8, power:"Kill a daemon", cost: 3}, //done
-  7: {name: "Stulo", value: 8, power:"Steal a daemon", cost: 3},
-  8: {name: "Dipis", value: 8, power:"Choose the next two priests", cost: 3},
+  6: {name: "Bulbur", value: 5, power:"Kill a daemon", cost: 3, color: 0}, //done
+  7: {name: "Stulo", value: 5, power:"Steal a daemon", cost: 3, color: 1},
+  8: {name: "Dipis", value: 5, power:"Choose the next two priests", cost: 3, color: 1},
+
+  //choisir entre deux dieux et les deux doivent réussir
+  9: {name: "Ultima", value: 10, power:"Win the game"}
 }
 
 var gods_names = []
