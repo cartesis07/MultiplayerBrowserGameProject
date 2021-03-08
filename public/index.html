@@ -13,6 +13,11 @@
   <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
   <script src="/socket.io/socket.io.js"></script>
   <script src="./js/index.js"></script>
+  <script>
+    $(document).ready(function(){
+      $('[data-toggle="popover"]').popover();
+    });
+    </script>
 </head>
 <body>
     <div class="content">
@@ -33,7 +38,12 @@
 
         <div id="lobby" class="lobby">
         <hr/>
-        <h4>Your Room ID : </h4><h4 id="room-id"></h4>
+        <h4>Your Room ID : </h4>
+
+        <a id="my-popover" class="d-inline-block pointer" tabindex="-1" data-toggle="popover" data-trigger="hover" data-placement="bottom" data-content="Copy Room ID" onClick="CopyID()" onmouseleave="RefreshPopover()">
+          <h4 id="room-id"></h4>
+        </a>
+        
         <hr/>
         <h4>Players in your room : </h4><h4 id="players-list"></h4>
         <hr/>

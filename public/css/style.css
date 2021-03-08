@@ -30,6 +30,15 @@
     display: none;
 }
 
+.pointer {
+    cursor:pointer;
+    transition: all .2s ease-in-out;
+}
+
+.pointer:hover {
+    transform: scale(1.2);
+}
+
 .the-game{
     display: none;
 }

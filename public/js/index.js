@@ -101,6 +101,25 @@ function SendUsername(){
     }
 }
 
+function CopyID() {
+    var tempInput = document.createElement("input");
+    tempInput.value = document.getElementById("room-id").innerText;
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    tempInput.setSelectionRange(0, 99999) /* For mobile devices */
+    document.execCommand("copy");
+    document.body.removeChild(tempInput);
+
+    var popoverEl = $("#my-popover");
+    popoverEl.attr("data-content", "Copied !");
+    popoverEl.popover("show");
+}
+
+function RefreshPopover(){
+    var popoverEl = $("#my-popover");
+    popoverEl.attr("data-content", "Copy Room ID");
+}
+
 function LeaveRoom() {
     socket.emit('leave', current_room)
     current_room = ""
