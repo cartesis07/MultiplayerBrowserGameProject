@@ -29,13 +29,13 @@ let objectives = {
     //Area 2 objectives
     3: {name: "Brokhor", value: 5, power:"Change a deamon's family", cost: 2, color: 0},
     4: {name: "Amganon", value: 5, power:"Exchange two hands", cost: 2, color: 1}, //done
-    5: {name: "Sitifor", value: 5, power:"Secretly, look at the religious alignement of somebody", cost: 2, color: 0}, //done
+    5: {name: "Dipis", value: 5, power:"Choose the next two priests", cost: 3, color: 0},
     
     //Area 3 objectives
     6: {name: "Bulbur", value: 5, power:"Kill a daemon", cost: 3, color: 0}, //done
-    7: {name: "Stulo", value: 5, power:"Steal a daemon", cost: 3, color: 1},
-    8: {name: "Dipis", value: 5, power:"Choose the next two priests", cost: 3, color: 1},
-}
+    7: {name: "Stulo", value: 5, power:"Steal a daemon", cost: 3, color: 1}, //done
+    8: {name: "Sitifor", value: 5, power:"Secretly, look at the religious alignement of somebody", cost: 2, color: 1}, //done
+  }
 
 socket.on('room-id', function(room_id) {
     current_room = room_id;
