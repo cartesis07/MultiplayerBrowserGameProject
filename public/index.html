@@ -89,6 +89,10 @@
           <div class="progress">
             <div id="progress" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
           </div>
+          <br/>
+          <div class="progress">
+            <div id="regress" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
 
           <br/>
 
@@ -139,7 +143,18 @@
           <div id="power3" class="power3">
           </div>
           <div id="power4" class="power4">
+            <div class="form-group">
+              <label for="exampleFormControlSelect1">Exchange two other influence hands</label>
+              <select class="form-control" id="form-power4-1">
+              </select>
+              <select class="form-control" id="form-power4-2">
+              </select>
+              </br>
+              <button type="button" onClick="Power4()" class="btn btn-success">Power</button>
+              <button type="button" onClick="IgnorePower4()" class="btn btn-secondary">Ignore power</button>
+            </div>
           </div>
+
           <div id="power5" class="power5">
             <div class="form-group">
               <label for="exampleFormControlSelect1">Secretly look at the religious alignement of a player for the cost of two cards.</label>
@@ -150,8 +165,18 @@
               <button type="button" onClick="IgnorePower5()" class="btn btn-secondary">Ignore power</button>
             </div>
           </div>
+          
           <div id="power6" class="power6">
+            <div class="form-group">
+              <label for="exampleFormControlSelect1">Kill a deamon</label>
+              <select class="form-control" id="form-power6">
+              </select>
+              </br>
+              <button type="button" onClick="Power6()" class="btn btn-success">Power</button>
+              <button type="button" onClick="IgnorePower6()" class="btn btn-secondary">Ignore power</button>
+            </div>
           </div>
+
           <div id="power7" class="power7">
           </div>
           <div id="power8" class="power8">

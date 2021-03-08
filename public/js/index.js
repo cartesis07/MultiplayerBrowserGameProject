@@ -15,24 +15,26 @@ var duo2 = undefined
 var current_god = undefined
 var current_area = 0
 var cards = [1,2,3,4]
+var progress = 0
+var regress = 0
 
 //list of all objectives
 let objectives = {
-
+  
     //Area 1 objectives
-    0: {name: "Agamator", value: 5, power: "Make a player discard a card", cost: 0},
-    1: {name: "Kthera", value: 5, power: "Steal a card from someone else", cost: 0},
-    2: {name: "Zobi", value: 5, power: "Make a player draw 2 cards", cost: 0},
+    0: {name: "Agamator", value: 3, power: "Make a player discard a card", cost: 0}, //done
+    1: {name: "Kthera", value: 5, power: "Steal a card from someone else", cost: 0}, //done
+    2: {name: "Zobi", value: 5, power: "Make a player draw 2 cards", cost: 0}, //done
     
     //Area 2 objectives
-    3: {name: "Brokhor", value: 8, power:"Activate another god's power", cost: 2},
-    4: {name: "Amganon", value: 8, power:"Exchange this god against another on the table", cost: 1},
-    5: {name: "Sitifor", value: 8, power:"Secretly, look at the religious alignement of somebody", cost: 2},
+    3: {name: "Brokhor", value: 6, power:"Spawn mini-deamon", cost: 2},
+    4: {name: "Amganon", value: 6, power:"Exchange two hands", cost: 2}, //done
+    5: {name: "Sitifor", value: 6, power:"Secretly, look at the religious alignement of somebody", cost: 2}, //done
     
     //Area 3 objectives
-    6: {name: "Bulbur", value: 10, power:"Kill a daemon", cost: 3},
-    7: {name: "Stulo", value: 10, power:"Steal a daemon", cost: 3},
-    8: {name: "Dipis", value: 10, power:"Choose the next two priests", cost: 4},
+    6: {name: "Bulbur", value: 8, power:"Kill a daemon", cost: 3},
+    7: {name: "Stulo", value: 8, power:"Steal a daemon", cost: 3},
+    8: {name: "Dipis", value: 8, power:"Choose the next two priests", cost: 3},
   }
 
 socket.on('room-id', function(room_id) {
@@ -268,6 +270,16 @@ function Vote(){
     Hide("vote")
 }
 
+function CardCount(){
+    var card_count = 0
+    for (let i = 0; i < hand_select.length; i++){
+        if(hand_select[i] == 1){
+            card_count++
+        }
+    }
+    return card_count
+}
+
 function Power0(){
     socket.emit('power', {room: current_room, grade: 0, power: document.getElementById("form-power0").value})
     document.getElementById("form-power0").innerHTML = ""
@@ -286,13 +298,38 @@ function Power2(){
     Hide('power2')
 }
 
-function Power5(){
-    var card_count = 0
-    for (let i = 0; i < hand_select.length; i++){
-        if(hand_select[i] == 1){
-            card_count++
-        }
+
+function Power4(){
+    var card_count = CardCount()
+    if(document.getElementById('form-power4-1').value == document.getElementById('form-power4-2').value){
+        Swal.fire({
+            icon: 'error',
+            title: 'Please, select 2 different players',
+            })
     }
+    else if(card_count == objectives[4].cost) {
+        socket.emit('power', {room: current_room, grade: 4, power1: document.getElementById("form-power4-1").value, power2: document.getElementById("form-power4-2").value})
+        document.getElementById("form-power4-1").innerHTML = ""
+        document.getElementById("form-power4-2").innerHTML = ""
+        Hide('power4')
+    }
+    else{
+        Swal.fire({
+            icon: 'error',
+            title: 'Please, select ' + objectives[4].cost + ' cards',
+            })
+    }
+}
+
+function IgnorePower4(){
+    socket.emit('power', {room: current_room, grade: 4, power1: "ignore"})
+    document.getElementById("form-power4-1").innerHTML = ""
+    document.getElementById("form-power4-2").innerHTML = ""
+    Hide('power4')
+}
+
+function Power5(){
+    var card_count = CardCount()
     if(card_count == objectives[5].cost){
         socket.emit('power', {room: current_room, grade: 5, power: document.getElementById("form-power5").value, cost_card: hand_select, player: number_in_list})
         var index_looked = roles_list.indexOf(document.getElementById("form-power5").value)
@@ -313,7 +350,7 @@ function Power5(){
     else{
         Swal.fire({
         icon: 'error',
-        title: 'Please, select 2 cards',
+        title: 'Please, select ' + objectives[5].cost + ' cards',
         })
     }
 }
@@ -322,6 +359,27 @@ function IgnorePower5(){
     socket.emit('power', {room: current_room, grade: 5, power: "ignore"})
     document.getElementById("form-power5").innerHTML = ""
     Hide('power5')
+}
+
+function Power6(){
+    var card_count = CardCount()
+    if(card_count == objectives[6].cost) {
+        socket.emit('power', {room: current_room, grade: 6, power: document.getElementById("form-power6").value})
+        document.getElementById("form-power6").innerHTML = ""
+        Hide('power6')
+    }
+    else{
+        Swal.fire({
+            icon: 'error',
+            title: 'Please, select ' + objectives[6].cost + ' cards',
+            })
+    }
+}
+
+function IgnorePower6(){
+    socket.emit('power', {room: current_room, grade: 6, power: "ignore"})
+    document.getElementById("form-power6").innerHTML = ""
+    Hide('power6')
 }
 
 //game launched by the administrator
@@ -427,6 +485,9 @@ socket.on('result', (results) => {
             text: 'The duo sent ' + results.power + ' energy'
         })
         document.getElementById("objective-to-do").innerHTML = ""
+        regress++
+        var factor = regress * (100/4)
+        document.getElementById("regress").style="width: "+ factor + "%"
     }
     var new_line = document.createElement("div")
     new_line.innerHTML = "<h5>The duo sent " + results.power + " energy </h4>"
@@ -450,6 +511,9 @@ socket.on('start-vote', () => {
 socket.on('vote-result', (vote_results) => {
     Hide("objective-to-do")
     if(vote_results.equality === true){
+        regress++
+        var factor = regress * (100/5)
+        document.getElementById("regress").style="width: "+ factor + "%"
         Swal.fire({
             icon: 'error',
             title: 'Equality',
@@ -457,17 +521,14 @@ socket.on('vote-result', (vote_results) => {
           })
     }
     else{
-        var count = 0;
-        for(let i = 0; i < gods_dictionary.length; i++){
-            count += gods_dictionary[i].length
-        }
-        count *= 20
-        document.getElementById("progress").style="width: "+ count + "%"
+        progress++
+        var factor = progress * (100/6)
+        document.getElementById("progress").style="width: "+ factor + "%"
         Swal.fire({
             icon: 'success',
             title: 'Vote results',
             text: players_list[vote_results.index_max] + ' obtained ' + vote_results.max + ' votes and acquires ' + objectives[current_god].name
-          })
+        })
     }
 })
 
@@ -513,6 +574,28 @@ socket.on('power2', (player_number) => {
     }
 })
 
+socket.on('power4', (player_number) => {
+    if(number_in_list == player_number){
+        var form = document.getElementById("form-power4-1")
+        for (let i = 0 ; i < players_list.length ; i++){
+            if(players_list[i] != my_username){
+                var option = document.createElement("option")
+                option.innerText = players_list[i]
+                form.appendChild(option)
+            }
+        }
+        var form = document.getElementById("form-power4-2")
+        for (let i = 0 ; i < players_list.length ; i++){
+            if(players_list[i] != my_username){
+                var option = document.createElement("option")
+                option.innerText = players_list[i]
+                form.appendChild(option)
+            }
+        }
+        Display('power4')
+    }
+})
+
 socket.on('power5', (player_number) => {
     if(number_in_list == player_number){
         var form = document.getElementById("form-power5")
@@ -524,5 +607,19 @@ socket.on('power5', (player_number) => {
             }
         }
         Display('power5')
+    }
+})
+
+socket.on('power6', (player_number) => {
+    if(number_in_list == player_number){
+        var form = document.getElementById("form-power6")
+        for (let i = 0 ; i < gods_dictionary.length ; i++){
+            for (let j = 0; j < gods_dictionary[i].length ; j++){
+                var option = document.createElement("option")
+                option.innerText = objectives[gods_dictionary[i][j]].name
+                form.appendChild(option)
+            }
+        }
+        Display('power6')
     }
 })
