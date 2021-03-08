@@ -22,15 +22,12 @@ let objectives = {
   //Area 2 objectives
   3: {name: "Brokhor", value: 5, power:"Change a deamon's family", cost: 2, color: 0},
   4: {name: "Amganon", value: 5, power:"Exchange two hands", cost: 2, color: 1}, //done
-  5: {name: "Sitifor", value: 5, power:"Secretly, look at the religious alignement of somebody", cost: 2, color: 1}, //done
+  5: {name: "Sitifor", value: 5, power:"Secretly, look at the religious alignement of somebody", cost: 2, color: 0}, //done
   
   //Area 3 objectives
   6: {name: "Bulbur", value: 5, power:"Kill a daemon", cost: 3, color: 0}, //done
-  7: {name: "Stulo", value: 5, power:"Steal a daemon", cost: 3, color: 1},
+  7: {name: "Stulo", value: 5, power:"Steal a daemon", cost: 3, color: 1}, //done
   8: {name: "Dipis", value: 5, power:"Choose the next two priests", cost: 3, color: 1},
-
-  //choisir entre deux dieux et les deux doivent réussir
-  9: {name: "Ultima", value: 10, power:"Win the game"}
 }
 
 var gods_names = []
@@ -721,7 +718,7 @@ class GameManagement {
         else{
           for (let i = 0; i < this.gods_dictionary.length ; i++){
               if(this.gods_dictionary[i].includes(gods_names.indexOf(this.power6.power))){
-                this.gods_dictionary[i].splice(this.gods_dictionary.indexOf(gods_names.indexOf(this.power6.power)),1)
+                this.gods_dictionary[i].splice(this.gods_dictionary[i].indexOf(gods_names.indexOf(this.power6.power)),1)
               }
           }
           this.updateGods()
@@ -730,9 +727,51 @@ class GameManagement {
       }
 
       Power7(){
-
-        this.Power8()
+        if(this.gods_selected.includes(7)){
+          for(let i = 0; i < this.gods_dictionary.length ; i++){
+            if(this.gods_dictionary[i].includes(7)){
+              io.sockets.to(this.room).emit('power7',i)
+            }
+          }
+          this.resolvePower7()
+        }
+        else{
+          this.Power8()
+        }
       }
+
+        resolvePower7(){
+          for(let i = 0; i < powers.length ; i++){
+            if(powers[i].room == this.room && powers[i].grade == 7){
+              this.power7 = powers[i]
+              powers.splice(i,1)
+              this.applyPower7()
+            }
+            else{
+              setTimeout(() => this.resolvePower7(), 1000)
+            }
+          }
+          if(powers.length == 0){
+            setTimeout(() => this.resolvePower7(), 1000)
+          }
+        }
+
+        applyPower7(){
+          if(this.power7.power == "ignore"){
+            this.Power8()
+          }
+          else{
+            this.gods_dictionary[this.power7.my_nb].push(gods_names.indexOf(this.power7.power))
+            for (let i = 0; i < this.gods_dictionary.length ; i++){
+                if(this.gods_dictionary[i].includes(gods_names.indexOf(this.power7.power)) && i != this.power7.my_nb){
+                  this.gods_dictionary[i].splice(this.gods_dictionary[i].indexOf(gods_names.indexOf(this.power7.power)),1)
+                }
+            }
+            this.updateGods()
+            this.Power8()
+          }
+        }
+
       Power8(){
 
         this.DrawCards()

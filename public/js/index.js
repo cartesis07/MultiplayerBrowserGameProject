@@ -22,20 +22,20 @@ var regress = 0
 let objectives = {
   
     //Area 1 objectives
-    0: {name: "Agamator", value: 3, power: "Make a player discard a card", cost: 0}, //done
-    1: {name: "Kthera", value: 5, power: "Steal a card from someone else", cost: 0}, //done
-    2: {name: "Zobi", value: 5, power: "Make a player draw 2 cards", cost: 0}, //done
+    0: {name: "Agamator", value: 5, power: "Make a player discard a card", cost: 0, color: 0}, //done
+    1: {name: "Kthera", value: 5, power: "Steal a card from someone else", cost: 0, color: 1}, //done
+    2: {name: "Zobi", value: 5, power: "Make a player draw 2 cards", cost: 0, color: 1}, //done
     
     //Area 2 objectives
-    3: {name: "Brokhor", value: 6, power:"Spawn mini-deamon", cost: 2},
-    4: {name: "Amganon", value: 6, power:"Exchange two hands", cost: 2}, //done
-    5: {name: "Sitifor", value: 6, power:"Secretly, look at the religious alignement of somebody", cost: 2}, //done
+    3: {name: "Brokhor", value: 5, power:"Change a deamon's family", cost: 2, color: 0},
+    4: {name: "Amganon", value: 5, power:"Exchange two hands", cost: 2, color: 1}, //done
+    5: {name: "Sitifor", value: 5, power:"Secretly, look at the religious alignement of somebody", cost: 2, color: 0}, //done
     
     //Area 3 objectives
-    6: {name: "Bulbur", value: 8, power:"Kill a daemon", cost: 3},
-    7: {name: "Stulo", value: 8, power:"Steal a daemon", cost: 3},
-    8: {name: "Dipis", value: 8, power:"Choose the next two priests", cost: 3},
-  }
+    6: {name: "Bulbur", value: 5, power:"Kill a daemon", cost: 3, color: 0}, //done
+    7: {name: "Stulo", value: 5, power:"Steal a daemon", cost: 3, color: 1},
+    8: {name: "Dipis", value: 5, power:"Choose the next two priests", cost: 3, color: 1},
+}
 
 socket.on('room-id', function(room_id) {
     current_room = room_id;
@@ -382,6 +382,27 @@ function IgnorePower6(){
     Hide('power6')
 }
 
+function Power7(){
+    var card_count = CardCount()
+    if(card_count == objectives[7].cost) {
+        socket.emit('power', {room: current_room, my_nb: number_in_list, grade: 7, power: document.getElementById("form-power7").value})
+        document.getElementById("form-power7").innerHTML = ""
+        Hide('power7')
+    }
+    else{
+        Swal.fire({
+            icon: 'error',
+            title: 'Please, select ' + objectives[7].cost + ' cards',
+            })
+    }
+}
+
+function IgnorePower7(){
+    socket.emit('power', {room: current_room, grade: 7, power: "ignore"})
+    document.getElementById("form-power7").innerHTML = ""
+    Hide('power7')
+}
+
 //game launched by the administrator
 socket.on('game-launched', () => {
     Hide("lobby")
@@ -621,5 +642,21 @@ socket.on('power6', (player_number) => {
             }
         }
         Display('power6')
+    }
+})
+
+socket.on('power7', (player_number) => {
+    if(number_in_list == player_number){
+        var form = document.getElementById("form-power7")
+        for (let i = 0 ; i < gods_dictionary.length ; i++){
+            if(i != number_in_list){
+                for (let j = 0; j < gods_dictionary[i].length ; j++){
+                    var option = document.createElement("option")
+                    option.innerText = objectives[gods_dictionary[i][j]].name
+                    form.appendChild(option)
+                }
+            }
+        }
+        Display('power7')
     }
 })
