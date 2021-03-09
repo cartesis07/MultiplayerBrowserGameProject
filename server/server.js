@@ -25,9 +25,9 @@ let objectives = {
   5: {name: "Dipis", value: 5, power:"Choose the next two priests", cost: 3, color: 0},
   
   //Area 3 objectives
-  6: {name: "Bulbur", value: 5, power:"Kill a daemon", cost: 3, color: 0}, //done
+  6: {name: "Bulbur", value: 5, power:"Kill a daemon", cost: 3, color: 1}, //done
   7: {name: "Stulo", value: 5, power:"Steal a daemon", cost: 3, color: 1}, //done
-  8: {name: "Sitifor", value: 5, power:"Secretly, look at the religious alignement of somebody", cost: 2, color: 1}, //done
+  8: {name: "Sitifor", value: 5, power:"Secretly, look at the religious alignement of somebody", cost: 3, color: 0},
 }
 
 var gods_names = []
@@ -459,6 +459,20 @@ class GameManagement {
 
           this.Power0()
       }
+
+
+      CostPay(nb,selection){
+          for(let i = 0 ; i < selection.length ; i++){
+            if(selection[i] == 1){
+              delete this.card_dictionary[nb][i]
+            }
+          }
+          this.card_dictionary[nb] = this.card_dictionary[nb].filter(function (el) {
+            return el != null;
+          });
+          this.updateCards()
+      }
+
       Power0(){
         if(this.gods_selected.includes(0)){
             for (let i = 0; i < this.gods_dictionary.length ; i++){
@@ -592,6 +606,8 @@ class GameManagement {
 
         this.Power4()
       }
+
+
       Power4(){
         if(this.gods_selected.includes(4)){
           for(let i = 0; i < this.gods_dictionary.length ; i++){
@@ -626,11 +642,15 @@ class GameManagement {
         if(this.power4.power1 == "ignore"){
           this.Power5()
         }
-        var tmp = this.card_dictionary[this.game_users_list.indexOf(this.power4.power1)]
-        this.card_dictionary[this.game_users_list.indexOf(this.power4.power1)] = this.card_dictionary[this.game_users_list.indexOf(this.power4.power2)]
-        this.card_dictionary[this.game_users_list.indexOf(this.power4.power2)] = tmp
-        this.updateCards()
-        this.Power5()
+        else{
+          this.CostPay(this.power4.player,this.power4.cost_card)
+
+          var tmp = this.card_dictionary[this.game_users_list.indexOf(this.power4.power1)]
+          this.card_dictionary[this.game_users_list.indexOf(this.power4.power1)] = this.card_dictionary[this.game_users_list.indexOf(this.power4.power2)]
+          this.card_dictionary[this.game_users_list.indexOf(this.power4.power2)] = tmp
+          this.updateCards()
+          this.Power5()
+        }
       }
 
       Power5(){
@@ -668,6 +688,8 @@ class GameManagement {
           this.Power6()
         }
         else{
+            this.CostPay(this.power5.player,this.power5.cost_card)
+
             for(let i = 0 ; i < this.power5.cost_card.length ; i++){
               if(this.power5.cost_card[i] == 1){
                   delete this.card_dictionary[this.power5.player][i]
@@ -716,6 +738,8 @@ class GameManagement {
           this.Power7()
         }
         else{
+          this.CostPay(this.power6.player,this.power6.cost_card)
+
           for (let i = 0; i < this.gods_dictionary.length ; i++){
               if(this.gods_dictionary[i].includes(gods_names.indexOf(this.power6.power))){
                 this.gods_dictionary[i].splice(this.gods_dictionary[i].indexOf(gods_names.indexOf(this.power6.power)),1)
@@ -761,6 +785,8 @@ class GameManagement {
             this.Power8()
           }
           else{
+            this.CostPay(this.power7.player,this.power7.cost_card)
+
             this.gods_dictionary[this.power7.my_nb].push(gods_names.indexOf(this.power7.power))
             for (let i = 0; i < this.gods_dictionary.length ; i++){
                 if(this.gods_dictionary[i].includes(gods_names.indexOf(this.power7.power)) && i != this.power7.my_nb){

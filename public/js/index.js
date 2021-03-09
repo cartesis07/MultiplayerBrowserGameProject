@@ -34,7 +34,7 @@ let objectives = {
     //Area 3 objectives
     6: {name: "Bulbur", value: 5, power:"Kill a daemon", cost: 3, color: 0}, //done
     7: {name: "Stulo", value: 5, power:"Steal a daemon", cost: 3, color: 1}, //done
-    8: {name: "Sitifor", value: 5, power:"Secretly, look at the religious alignement of somebody", cost: 2, color: 1}, //done
+    8: {name: "Sitifor", value: 5, power:"Secretly, look at the religious alignement of somebody", cost: 3, color: 1}, //done
   }
 
 socket.on('room-id', function(room_id) {
@@ -308,7 +308,7 @@ function Power4(){
             })
     }
     else if(card_count == objectives[4].cost) {
-        socket.emit('power', {room: current_room, grade: 4, power1: document.getElementById("form-power4-1").value, power2: document.getElementById("form-power4-2").value})
+        socket.emit('power', {room: current_room, grade: 4, power1: document.getElementById("form-power4-1").value, power2: document.getElementById("form-power4-2").value, cost_card: hand_select, player: number_in_list})
         document.getElementById("form-power4-1").innerHTML = ""
         document.getElementById("form-power4-2").innerHTML = ""
         Hide('power4')
@@ -364,7 +364,7 @@ function IgnorePower5(){
 function Power6(){
     var card_count = CardCount()
     if(card_count == objectives[6].cost) {
-        socket.emit('power', {room: current_room, grade: 6, power: document.getElementById("form-power6").value})
+        socket.emit('power', {room: current_room, grade: 6, power: document.getElementById("form-power6").value, cost_card: hand_select, player: number_in_list})
         document.getElementById("form-power6").innerHTML = ""
         Hide('power6')
     }
@@ -385,7 +385,7 @@ function IgnorePower6(){
 function Power7(){
     var card_count = CardCount()
     if(card_count == objectives[7].cost) {
-        socket.emit('power', {room: current_room, my_nb: number_in_list, grade: 7, power: document.getElementById("form-power7").value})
+        socket.emit('power', {room: current_room, my_nb: number_in_list, grade: 7, power: document.getElementById("form-power7").value, cost_card: hand_select, player: number_in_list})
         document.getElementById("form-power7").innerHTML = ""
         Hide('power7')
     }
