@@ -94,7 +94,7 @@ function ShowRooms(){
 function SendUsername(){
     my_username = document.getElementById("input-username").value
 
-    if (my_username !== "" && my_username.length < 12){
+    if (my_username !== "" && my_username.length < 15){
         socket.emit('send-username', my_username)
     
         Hide("first-action")
@@ -593,7 +593,7 @@ socket.on('start-vote', () => {
     var input = document.getElementById("exampleFormControlSelect1")
     input.innerHTML = ""
     for (let i = 0 ; i < players_list.length ; i++){
-        if(players_list[i] != duo1 && players_list[i] != duo2 && player_list[i] != my_username){
+        if(players_list[i] != duo1 && players_list[i] != duo2 && players_list[i] != my_username){
             var option = document.createElement("option")
             option.innerText = players_list[i]
             input.appendChild(option)
