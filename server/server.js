@@ -27,7 +27,7 @@ let objectives = {
   //Area 3 objectives
   6: {name: "Bulbur", value: 5, power:"Kill a daemon", cost: 3, color: 1}, //done
   7: {name: "Stulo", value: 5, power:"Steal a daemon", cost: 3, color: 1}, //done
-  8: {name: "Sitifor", value: 5, power:"Secretly, look at the religious alignement of somebody", cost: 3, color: 0},
+  8: {name: "Sitifor", value: 5, power:"Secretly, look at the religious alignement of somebody", cost: 3, color: 0}, //done
 }
 
 var gods_names = []
@@ -662,53 +662,8 @@ class GameManagement {
       }
 
       Power5(){
-        if(this.gods_selected.includes(5)){
-          for(let i = 0; i < this.gods_dictionary.length ; i++){
-            if(this.gods_dictionary[i].includes(5)){
-              io.sockets.to(this.room).emit('power5',i)
-            }
-          }
-          this.resolvePower5()
-        }
-        else{
-          this.Power6()
-        }
-      }
-
-      resolvePower5(){
-        for(let i = 0; i < powers.length ; i++){
-          if(powers[i].room == this.room && powers[i].grade == 5){
-            this.power5 = powers[i]
-            powers.splice(i,1)
-            this.applyPower5()
-          }
-          else{
-            setTimeout(() => this.resolvePower5(), 1000)
-          }
-        }
-        if(powers.length == 0){
-          setTimeout(() => this.resolvePower5(), 1000)
-        }
-      }
-
-      applyPower5(){
-        if(this.power5.power == "ignore"){
-          this.Power6()
-        }
-        else{
-            this.CostPay(this.power5.player,this.power5.cost_card)
-
-            for(let i = 0 ; i < this.power5.cost_card.length ; i++){
-              if(this.power5.cost_card[i] == 1){
-                  delete this.card_dictionary[this.power5.player][i]
-              }
-            }
-            this.card_dictionary[this.power5.player] = this.card_dictionary[this.power5.player].filter(function (el) {
-              return el != null;
-            });
-            this.updateCards()
-            this.Power6()
-        }
+        
+        this.Power6()
       }
 
       Power6(){        
@@ -807,8 +762,44 @@ class GameManagement {
         }
 
       Power8(){
+        if(this.gods_selected.includes(8)){
+          for(let i = 0; i < this.gods_dictionary.length ; i++){
+            if(this.gods_dictionary[i].includes(8)){
+              io.sockets.to(this.room).emit('power8',i)
+            }
+          }
+          this.resolvePower8()
+        }
+        else{
+          this.DrawCards()
+        }
 
-        this.DrawCards()
+      }
+
+      resolvePower8(){
+        for(let i = 0; i < powers.length ; i++){
+          if(powers[i].room == this.room && powers[i].grade == 8){
+            this.power8 = powers[i]
+            powers.splice(i,1)
+            this.applyPower8()
+          }
+          else{
+            setTimeout(() => this.resolvePower8(), 1000)
+          }
+        }
+        if(powers.length == 0){
+          setTimeout(() => this.resolvePower8(), 1000)
+        }
+      }
+
+      applyPower8(){
+        if(this.power8.power == "ignore"){
+          this.DrawCards()
+        }
+        else{
+            this.CostPay(this.power5.player,this.power5.cost_card)
+            this.DrawCards()
+          }
       }
 
       DrawCards(){
