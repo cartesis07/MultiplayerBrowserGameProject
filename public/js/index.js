@@ -593,7 +593,7 @@ socket.on('start-vote', () => {
     var input = document.getElementById("exampleFormControlSelect1")
     input.innerHTML = ""
     for (let i = 0 ; i < players_list.length ; i++){
-        if(players_list[i] != duo1 && players_list[i] != duo2){
+        if(players_list[i] != duo1 && players_list[i] != duo2 && player_list[i] != my_username){
             var option = document.createElement("option")
             option.innerText = players_list[i]
             input.appendChild(option)
@@ -616,7 +616,7 @@ socket.on('vote-result', (vote_results) => {
     }
     else{
         progress++
-        var factor = progress * (100/6)
+        var factor = progress * (100/7)
         document.getElementById("progress").style="width: "+ factor + "%"
         Swal.fire({
             icon: 'success',
