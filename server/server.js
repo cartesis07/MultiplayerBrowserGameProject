@@ -15,9 +15,9 @@ let cards = [0,1,2]
 let objectives = {
   
   //Area 1 objectives
-  0: {name: "Agamator", value: 4, power: "Make a player discard a card", cost: 0, color: 0}, //done
-  1: {name: "Kthera", value: 5, power: "Steal a card from someone else", cost: 0, color: 1}, //done
-  2: {name: "Zobi", value: 6, power: "Make a player draw 1 card", cost: 0, color: 1}, //done
+  0: {name: "Agamator", value: 3, power: "Make a player discard a card", cost: 0, color: 0}, //done
+  1: {name: "Kthera", value: 4, power: "Steal a card from someone else", cost: 0, color: 1}, //done
+  2: {name: "Zobi", value: 5, power: "Make a player draw 1 card", cost: 0, color: 1}, //done
   
   //Area 2 objectives
   3: {name: "Brokhor", value: 4, power:"Change a deamon's family", cost: 2, color: 0}, //done
@@ -308,6 +308,7 @@ class GameManagement {
         //this.resolvePowers()
 
      handleEra(){
+       console.log(this.card_dictionary)
         this.epoch++
         if(this.epoch == 4){
           this.era++
@@ -448,6 +449,7 @@ class GameManagement {
           for (let i = 0; i < this.vote_choice.length; i++){
               this.votes_dictionary[this.game_users_list.indexOf(this.vote_choice[i].vote)]++ 
           }
+          console.log(this.votes_dictionary)
           this.sendVoteResult()
           this.vote_choice = []
       }
@@ -620,10 +622,8 @@ class GameManagement {
       }
 
       applyPower2(){
-        for(let i = 0 ; i < 2 ; i++){
-          var random = cards[Math.floor(Math.random() * cards.length)];
-          this.card_dictionary[this.game_users_list.indexOf(this.power2)].push(random)
-        }
+        var random = cards[Math.floor(Math.random() * cards.length)];
+        this.card_dictionary[this.game_users_list.indexOf(this.power2)].push(random)
         this.updateCards()
         this.Power3()
       }
