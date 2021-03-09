@@ -490,19 +490,19 @@ socket.on('game-launched', () => {
 socket.on('roles', (roles) => {
     roles_list = roles
     var index = roles_list.indexOf(my_username)
-    if (index == 0){
+    if (index == 0 || index == 1){
         my_role = "Traitor"
-        // Swal.fire({
-        //     icon: 'info',
-        //     title: 'You are a traitor !',
-        // })
+        Swal.fire({
+             icon: 'info',
+             title: 'You are a traitor !',
+        })
     }
     else {
         my_role = "Crewmate"
-        // Swal.fire({
-        //     icon: 'info',
-        //     title: 'You are a crewmate !',
-        // })
+        Swal.fire({
+             icon: 'info',
+             title: 'You are a crewmate !',
+        })
     }
 })
 
