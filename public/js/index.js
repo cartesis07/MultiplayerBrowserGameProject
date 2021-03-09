@@ -606,7 +606,7 @@ socket.on('vote-result', (vote_results) => {
     Hide("objective-to-do")
     if(vote_results.equality === true){
         regress++
-        var factor = regress * (100/5)
+        var factor = regress * (100/3)
         document.getElementById("regress").style="width: "+ factor + "%"
         Swal.fire({
             icon: 'error',
