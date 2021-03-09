@@ -15,7 +15,7 @@ var duo1 = undefined
 var duo2 = undefined
 var current_god = undefined
 var current_area = 0
-var cards = [1,3,4,6]
+var cards = [0,1,2]
 var progress = 0
 var regress = 0
 
@@ -23,20 +23,20 @@ var regress = 0
 let objectives = {
   
     //Area 1 objectives
-    0: {name: "Agamator", value: 15, power: "Make a player discard a card", cost: 0, color: 0}, //done
-    1: {name: "Kthera", value: 20, power: "Steal a card from someone else", cost: 0, color: 1}, //done
-    2: {name: "Zobi", value: 25, power: "Make a player draw 2 cards", cost: 0, color: 1}, //done
+    0: {name: "Agamator", value: 4, power: "Make a player discard a card", cost: 0, color: 0}, //done
+    1: {name: "Kthera", value: 5, power: "Steal a card from someone else", cost: 0, color: 1}, //done
+    2: {name: "Zobi", value: 6, power: "Make a player draw 1 card", cost: 0, color: 1}, //done
     
     //Area 2 objectives
-    3: {name: "Brokhor", value: 15, power:"Change a deamon's family", cost: 2, color: 0}, //done
-    4: {name: "Amganon", value: 20, power:"Exchange two hands", cost: 2, color: 1}, //done
-    5: {name: "Dipis", value: 25, power:"Choose the next two priests", cost: 2, color: 0}, //done
+    3: {name: "Brokhor", value: 4, power:"Change a deamon's family", cost: 2, color: 0}, //done
+    4: {name: "Amganon", value: 5, power:"Exchange two hands", cost: 2, color: 1}, //done
+    5: {name: "Dipis", value: 6, power:"Choose the next two priests", cost: 2, color: 0}, //done
     
     //Area 3 objectives
-    6: {name: "Bulbur", value: 20, power:"Kill a daemon", cost: 3, color: 1}, //done
-    7: {name: "Stulo", value: 15, power:"Steal a daemon", cost: 3, color: 1}, //done
-    8: {name: "Sitifor", value: 25, power:"Secretly, look at the religious alignement of somebody", cost: 3, color: 0}, //done
-  }
+    6: {name: "Bulbur", value: 5, power:"Kill a daemon", cost: 3, color: 1}, //done
+    7: {name: "Stulo", value: 4, power:"Steal a daemon", cost: 3, color: 1}, //done
+    8: {name: "Sitifor", value: 6, power:"Secretly, look at the religious alignement of somebody", cost: 3, color: 0}, //done
+}
 
 var gods_names = []
 for(let i = 0; i < 9; i++){
