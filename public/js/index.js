@@ -28,15 +28,15 @@ let objectives = {
     2: {name: "Zobi", value: 5, power: "Make a player draw 2 cards", cost: 0, color: 1}, //done
     
     //Area 2 objectives
-    3: {name: "Brokhor", value: 5, power:"Change a deamon's family", cost: 2, color: 0},
+    3: {name: "Brokhor", value: 5, power:"Change a deamon's family", cost: 2, color: 0}, //done
     4: {name: "Amganon", value: 5, power:"Exchange two hands", cost: 2, color: 1}, //done
-    5: {name: "Dipis", value: 5, power:"Choose the next two priests", cost: 3, color: 0},
+    5: {name: "Dipis", value: 5, power:"Choose the next two priests", cost: 3, color: 0}, //done
     
     //Area 3 objectives
     6: {name: "Bulbur", value: 5, power:"Kill a daemon", cost: 3, color: 1}, //done
     7: {name: "Stulo", value: 5, power:"Steal a daemon", cost: 3, color: 1}, //done
-    8: {name: "Sitifor", value: 5, power:"Secretly, look at the religious alignement of somebody", cost: 3, color: 0},
-}
+    8: {name: "Sitifor", value: 5, power:"Secretly, look at the religious alignement of somebody", cost: 3, color: 0}, //done
+  }
 
 var gods_names = []
 for(let i = 0; i < 9; i++){
@@ -251,8 +251,6 @@ function updateModal(player_number){
         var div_container = document.createElement("div")
         div_container.setAttribute("class","card-container")
 
-        console.log(cards)
-        console.log(colors[gods_names.indexOf(gods_dictionary[player_number][i])] == 0)
         if(colors[gods_dictionary[player_number][i]] == 0){
             div_container.style = "background-color: #EC7063;"
         }
@@ -361,6 +359,36 @@ function IgnorePower4(){
     document.getElementById("form-power4-1").innerHTML = ""
     document.getElementById("form-power4-2").innerHTML = ""
     Hide('power4')
+}
+
+
+function Power5(){
+    var card_count = CardCount()
+    if(document.getElementById('form-power5-1').value == document.getElementById('form-power5-2').value){
+        Swal.fire({
+            icon: 'error',
+            title: 'Please, select 2 different players',
+            })
+    }
+    else if(card_count == objectives[5].cost) {
+        socket.emit('power', {room: current_room, grade: 5, power1: document.getElementById("form-power5-1").value, power2: document.getElementById("form-power5-2").value, cost_card: hand_select, player: number_in_list})
+        document.getElementById("form-power5-1").innerHTML = ""
+        document.getElementById("form-power5-2").innerHTML = ""
+        Hide('power5')
+    }
+    else{
+        Swal.fire({
+            icon: 'error',
+            title: 'Please, select ' + objectives[5].cost + ' cards',
+            })
+    }
+}
+
+function IgnorePower5(){
+    socket.emit('power', {room: current_room, grade: 5, power1: "ignore"})
+    document.getElementById("form-power5-1").innerHTML = ""
+    document.getElementById("form-power5-2").innerHTML = ""
+    Hide('power5')
 }
 
 function Power6(){
@@ -490,7 +518,6 @@ socket.on('gods-dict', (gods_dict) => {
 })
 
 socket.on('colors', (list) => {
-    console.log(list)
     colors = list
 })
 
@@ -674,6 +701,28 @@ socket.on('power4', (player_number) => {
             }
         }
         Display('power4')
+    }
+})
+
+socket.on('power5', (player_number) => {
+    if(number_in_list == player_number){
+        var form = document.getElementById("form-power5-1")
+        for (let i = 0 ; i < players_list.length ; i++){
+            if(players_list[i] != my_username){
+                var option = document.createElement("option")
+                option.innerText = players_list[i]
+                form.appendChild(option)
+            }
+        }
+        var form = document.getElementById("form-power5-2")
+        for (let i = 0 ; i < players_list.length ; i++){
+            if(players_list[i] != my_username){
+                var option = document.createElement("option")
+                option.innerText = players_list[i]
+                form.appendChild(option)
+            }
+        }
+        Display('power5')
     }
 })
 

@@ -20,9 +20,9 @@ let objectives = {
   2: {name: "Zobi", value: 5, power: "Make a player draw 2 cards", cost: 0, color: 1}, //done
   
   //Area 2 objectives
-  3: {name: "Brokhor", value: 5, power:"Change a deamon's family", cost: 2, color: 0},
+  3: {name: "Brokhor", value: 5, power:"Change a deamon's family", cost: 2, color: 0}, //done
   4: {name: "Amganon", value: 5, power:"Exchange two hands", cost: 2, color: 1}, //done
-  5: {name: "Dipis", value: 5, power:"Choose the next two priests", cost: 3, color: 0},
+  5: {name: "Dipis", value: 5, power:"Choose the next two priests", cost: 3, color: 0}, //done
   
   //Area 3 objectives
   6: {name: "Bulbur", value: 5, power:"Kill a daemon", cost: 3, color: 1}, //done
@@ -248,6 +248,9 @@ class GameManagement {
         this.power6 = undefined
         this.power7 = undefined
         this.power8 = undefined
+        this.duo_selected = false
+        this.duo1 = undefined
+        this.duo2 = undefined
 
         //this.timer = setTimeout(this.stopNegotation.bind(this), 30000)
         this.setColors()
@@ -315,11 +318,18 @@ class GameManagement {
      }
 
      randomDuo(){
-       this.random_player1 = Math.floor(Math.random() * this.game_users_list.length);
-       this.random_player2 = this.random_player1
-       while(this.random_player2 === this.random_player1){
-        this.random_player2 = Math.floor(Math.random() * this.game_users_list.length);
+       if(this.duo_selected == false){
+          this.random_player1 = Math.floor(Math.random() * this.game_users_list.length);
+          this.random_player2 = this.random_player1
+          while(this.random_player2 === this.random_player1){
+            this.random_player2 = Math.floor(Math.random() * this.game_users_list.length);
+          }
        }
+       else{
+         this.random_player1 = this.duo1
+         this.random_player2 = this.duo2
+       }
+       this.duo_selected = false
        io.sockets.to(this.room).emit('duo', {rnd1: this.random_player1,rnd2: this.random_player2})
        this.randomGod()
       }
@@ -410,7 +420,7 @@ class GameManagement {
          this.vote()
        }
        else{
-         this.handleEra()
+         this.Power0()
        }
       }
 
@@ -710,7 +720,49 @@ class GameManagement {
       }
 
       Power5(){
-        this.Power6()
+        if(this.gods_selected.includes(5)){
+          for(let i = 0; i < this.gods_dictionary.length ; i++){
+            if(this.gods_dictionary[i].includes(5)){
+              io.sockets.to(this.room).emit('power5',i)
+            }
+          }
+          this.resolvePower5()
+        }
+        else{
+          this.Power6()
+        }
+      }
+
+      resolvePower5(){
+        for(let i = 0; i < powers.length ; i++){
+          if(powers[i].room == this.room && powers[i].grade == 5){
+            this.power5 = powers[i]
+            powers.splice(i,1)
+            this.applyPower5()
+          }
+          else{
+            setTimeout(() => this.resolvePower5(), 1000)
+          }
+        }
+        if(powers.length == 0){
+          setTimeout(() => this.resolvePower5(), 1000)
+        }
+      }
+
+      applyPower5(){
+        if(this.power5.power1 == "ignore"){
+          this.Power6()
+        }
+        else{
+          this.CostPay(this.power5.player,this.power5.cost_card)
+
+          this.duo_selected = true
+
+          this.duo1 = this.game_users_list.indexOf(this.power5.power1)
+          this.duo2 = this.game_users_list.indexOf(this.power5.power2)
+
+          this.Power6()
+        }
       }
 
       Power6(){        
