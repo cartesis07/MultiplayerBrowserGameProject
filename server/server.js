@@ -20,14 +20,14 @@ let objectives = {
   2: {name: "Zobi", value: 25, power: "Make a player draw 2 cards", cost: 0, color: 1}, //done
   
   //Area 2 objectives
-  3: {name: "Brokhor", value: 15, power:"Change a deamon's family", cost: 2, color: 0}, //done
+  3: {name: "Brokhor", value: 18, power:"Change a deamon's family", cost: 2, color: 0}, //done
   4: {name: "Amganon", value: 20, power:"Exchange two hands", cost: 2, color: 1}, //done
-  5: {name: "Dipis", value: 25, power:"Choose the next two priests", cost: 2, color: 0}, //done
+  5: {name: "Dipis", value: 22, power:"Choose the next two priests", cost: 2, color: 0}, //done
   
   //Area 3 objectives
   6: {name: "Bulbur", value: 20, power:"Kill a daemon", cost: 3, color: 1}, //done
-  7: {name: "Stulo", value: 15, power:"Steal a daemon", cost: 3, color: 1}, //done
-  8: {name: "Sitifor", value: 25, power:"Secretly, look at the religious alignement of somebody", cost: 3, color: 0}, //done
+  7: {name: "Stulo", value: 18, power:"Steal a daemon", cost: 3, color: 1}, //done
+  8: {name: "Sitifor", value: 22, power:"Secretly, look at the religious alignement of somebody", cost: 3, color: 0}, //done
 }
 
 var gods_names = []
