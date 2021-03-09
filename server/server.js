@@ -476,6 +476,9 @@ class GameManagement {
             this.gods_dictionary[index_max].push(this.current_god)
             this.gods_selected.push(this.current_god)
           }
+          else{
+            this.DrawOneCard()
+          }
           this.updateGods()
 
           io.sockets.to(this.room).emit('vote-result', {max: max, index_max: index_max, equality: equality})
@@ -902,6 +905,11 @@ class GameManagement {
       }
 
       DrawCards(){
+        this.DrawOneCard()
+        this.handleEra()
+      }
+
+      DrawOneCard(){
         if(this.epoch == 3){
           for(let i = 0; i < this.number_of_users; i++){
             var random = cards[Math.floor(Math.random() * cards.length)];
@@ -909,6 +917,5 @@ class GameManagement {
           }
           this.updateCards()
         }
-        this.handleEra()
       }
 }
