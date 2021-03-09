@@ -15,7 +15,7 @@ var duo1 = undefined
 var duo2 = undefined
 var current_god = undefined
 var current_area = 0
-var cards = [1,2,3,6]
+var cards = [1,3,4,6]
 var progress = 0
 var regress = 0
 
