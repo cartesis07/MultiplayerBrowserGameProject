@@ -905,17 +905,17 @@ class GameManagement {
       }
 
       DrawCards(){
-        this.DrawOneCard()
+        if(this.epoch == 3){
+          this.DrawOneCard()
+        }
         this.handleEra()
       }
 
       DrawOneCard(){
-        if(this.epoch == 3){
           for(let i = 0; i < this.number_of_users; i++){
             var random = cards[Math.floor(Math.random() * cards.length)];
             this.card_dictionary[i].push(random)
           }
           this.updateCards()
         }
-      }
 }
