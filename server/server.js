@@ -261,6 +261,11 @@ class GameManagement {
       for(let i = 0; i < 9; i++){
         this.colors.push(objectives[i].color)
       }
+      this.updateColors()
+    }
+
+    updateColors(){
+      io.sockets.to(this.room).emit('colors', this.colors)
     }
 
      giveRoles(){
@@ -611,10 +616,53 @@ class GameManagement {
       }
 
       Power3(){
-
-        this.Power4()
+        if(this.gods_selected.includes(3)){
+          for(let i = 0; i < this.gods_dictionary.length ; i++){
+            if(this.gods_dictionary[i].includes(3)){
+              io.sockets.to(this.room).emit('power3',i)
+            }
+          }
+          this.resolvePower3()
+        }
+        else{
+          this.Power4()
+        }
       }
 
+      resolvePower3(){
+        for(let i = 0; i < powers.length ; i++){
+          if(powers[i].room == this.room && powers[i].grade == 3){
+            this.power3 = powers[i]
+            powers.splice(i,1)
+            this.applyPower3()
+          }
+          else{
+            setTimeout(() => this.resolvePower3(), 1000)
+          }
+        }
+        if(powers.length == 0){
+          setTimeout(() => this.resolvePower3(), 1000)
+        }
+      }
+
+      applyPower3(){
+        if(this.power3.power == "ignore"){
+          this.Power4()
+        }
+        else{
+          this.CostPay(this.power3.player,this.power3.cost_card)
+
+          if(this.colors[gods_names.indexOf(this.power3.power)] == 1){
+            this.colors[gods_names.indexOf(this.power3.power)] = 0
+          }
+          else{
+            this.colors[gods_names.indexOf(this.power3.power)] = 1
+          }
+
+          this.updateColors()
+          this.Power4()
+        }
+      }
 
       Power4(){
         if(this.gods_selected.includes(4)){
@@ -662,7 +710,6 @@ class GameManagement {
       }
 
       Power5(){
-        
         this.Power6()
       }
 
