@@ -7,7 +7,7 @@ const publicPath = path.join(__dirname, '/../public');
 const port = process.env.PORT || 3000;
 
 //list of all influence cards
-let cards = [1,3,4,6]
+let cards = [1,2,5,10]
 
 //colors : 0 = red and 1 = yellow
 
