@@ -98,6 +98,11 @@
     padding: 2px 16px;
 }
 
+.card-container{
+    /*background-color: #EC7063;#F4D03F*/
+    padding: 2px 16px;
+}
+
 .objective-to-do{
     display: block;
     margin-top: 40px;

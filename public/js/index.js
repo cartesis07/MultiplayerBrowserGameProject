@@ -32,9 +32,9 @@ let objectives = {
     5: {name: "Dipis", value: 5, power:"Choose the next two priests", cost: 3, color: 0},
     
     //Area 3 objectives
-    6: {name: "Bulbur", value: 5, power:"Kill a daemon", cost: 3, color: 0}, //done
+    6: {name: "Bulbur", value: 5, power:"Kill a daemon", cost: 3, color: 1}, //done
     7: {name: "Stulo", value: 5, power:"Steal a daemon", cost: 3, color: 1}, //done
-    8: {name: "Sitifor", value: 5, power:"Secretly, look at the religious alignement of somebody", cost: 3, color: 1}, //done
+    8: {name: "Sitifor", value: 5, power:"Secretly, look at the religious alignement of somebody", cost: 3, color: 0},
   }
 
 socket.on('room-id', function(room_id) {
@@ -243,7 +243,13 @@ function updateModal(player_number){
         card.appendChild(image)
     
         var div_container = document.createElement("div")
-        div_container.setAttribute("class","container")
+        div_container.setAttribute("class","card-container")
+        if(objectives[i].color == 0){
+            div_container.style = "background-color: #EC7063;"
+        }
+        else{
+            div_container.style = "background-color: #F4D03F;"
+        }
         div_container.innerHTML = "<h5><b>"+ objectives[list[i]].name + "</br>" + "Power : " + objectives[list[i]].value +"</br>Cost : " + objectives[list[i]].cost + "<b/><h5/><p> " + objectives[list[i]].power + " </p>"
         card.appendChild(div_container)
     
@@ -483,7 +489,13 @@ socket.on('god', (god) => {
     card.appendChild(image)
 
     var div_container = document.createElement("div")
-    div_container.setAttribute("class","container")
+    div_container.setAttribute("class","card-container")
+    if(objectives[god].color == 0){
+        div_container.style = "background-color: #EC7063;"
+    }
+    else{
+        div_container.style = "background-color: #F4D03F;"
+    }
     div_container.innerHTML = "<h5><b>"+ objectives[index].name + "</br>" + "Power : " + objectives[index].value +"</br>Cost : " + objectives[index].cost + "<b/><h5/><p> " + objectives[index].power + " </p>"
     card.appendChild(div_container)
 

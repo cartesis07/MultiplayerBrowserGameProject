@@ -223,6 +223,7 @@ class GameManagement {
         this.card_dictionary = []
         this.gods_dictionary = []
         this.votes_dictionary = []
+        this.colors = []
         this.room = room
         this.energy_choice = []
         this.vote_choice = []
@@ -249,11 +250,18 @@ class GameManagement {
         this.power8 = undefined
 
         //this.timer = setTimeout(this.stopNegotation.bind(this), 30000)
+        this.setColors()
         this.giveRoles()
         this.distributeCards()
 
         this.handleEra()
      }
+
+     setColors(){
+      for(let i = 0; i < 9; i++){
+        this.colors.push(objectives[i].color)
+      }
+    }
 
      giveRoles(){
       this.roles_list = [...this.game_users_list]
